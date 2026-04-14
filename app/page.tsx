@@ -1,4 +1,5 @@
 import { ArticleCard } from "@/components/article-card";
+import { Header } from "@/components/header";
 
 export default async function Home() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -25,6 +26,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       <main className="container mx-auto px-4 py-16 max-w-7xl">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4">

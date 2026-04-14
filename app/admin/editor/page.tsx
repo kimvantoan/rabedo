@@ -29,7 +29,7 @@ function EditorForm() {
     try {
       const match = document.cookie.match(/(^|;\s*)admin-token=([^;]*)/);
       const token = match ? match[2] : null;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = '';
 
       const res = await fetch(`${apiUrl}/api/articles/${editId}`, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
@@ -70,7 +70,7 @@ function EditorForm() {
     try {
       const match = document.cookie.match(/(^|;\s*)admin-token=([^;]*)/);
       const token = match ? match[2] : null;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = '';
 
       const formData = new FormData();
       formData.append('title', title);
@@ -79,13 +79,11 @@ function EditorForm() {
         formData.append('thumbnail', thumbnailFile);
       }
 
-      // Khi Upload bằng FormData trong PUT của Laravel, ta phải gửi method POST kèm "_method=PUT"
-      if (isEditMode) {
-        formData.append('_method', 'PUT');
-      }
+      // Xóa bỏ Laravel _method spoofing
+      // Mặc định Next.js app/api hỗ trợ method PUT Native
 
       const res = await fetch(`${apiUrl}/api/articles${isEditMode ? `/${editId}` : ''}`, {
-        method: "POST",
+        method: isEditMode ? "PUT" : "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Accept": "application/json"

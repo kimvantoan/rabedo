@@ -41,7 +41,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
       try {
         const match = document.cookie.match(/(^|;\s*)admin-token=([^;]*)/);
         const token = match ? match[2] : null;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = '';
 
         const res = await fetch(`${apiUrl}/api/upload-image`, {
           method: "POST",
@@ -64,7 +64,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
           alert("Server báo sai cấu trúc hình ảnh hoặc file tải lên thất bại!");
         }
       } catch (err) {
-        alert("Có lỗi mạng khi đẩy hình ảnh vào kho Laravel Storage!");
+        alert("Có lỗi mạng khi đẩy hình ảnh vào kho dữ liệu!");
       }
     };
   };

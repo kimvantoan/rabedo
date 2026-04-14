@@ -18,7 +18,7 @@ export default function AdminPage() {
     try {
       const match = document.cookie.match(/(^|;\s*)admin-token=([^;]*)/);
       const token = match ? match[2] : null;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = '';
 
       const res = await fetch(`${apiUrl}/api/articles?page=${currentPage}&search=${searchQuery}&type=Admin`, {
         headers: {
@@ -50,7 +50,7 @@ export default function AdminPage() {
     try {
       const match = document.cookie.match(/(^|;\s*)admin-token=([^;]*)/);
       const token = match ? match[2] : null;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = '';
       const res = await fetch(`${apiUrl}/api/articles/${id}`, {
         method: 'DELETE',
         headers: {
@@ -202,8 +202,7 @@ export default function AdminPage() {
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-md text-sm transition-colors ${
-                        currentPage === pageNum
+                      className={`w-8 h-8 flex items-center justify-center rounded-md text-sm transition-colors ${currentPage === pageNum
                           ? "bg-primary text-primary-foreground font-semibold"
                           : "text-muted-foreground hover:bg-muted border border-transparent hover:border-border"
                         }`}

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { Lock, Mail, ArrowRight, ShieldAlert } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("admin@admin.com");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = '';
       const res = await fetch(`${apiUrl}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { Metadata } from "next";
+import { Header } from "@/components/header";
 
 // Hàm hỗ trợ loại bỏ thẻ HTML để lấy mô tả ngắn
 const stripHtml = (html: string) => {
@@ -75,19 +76,24 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="bg-white min-h-screen pb-12">
+      <Header />
 
-      {/* Breadcrumb */}
-      <div className="container mx-auto px-4 lg:px-6 pt-5 pb-6">
-        <div className="max-w-[800px] mx-auto">
-          <nav className="flex items-center gap-2 text-[12px] font-medium text-gray-400 uppercase tracking-widest justify-start">
-            <Link href="/" className="hover:text-black transition-colors"><Home className="w-3.5 h-3.5" /></Link>
-            <ChevronRight className="w-3 h-3" />
-            <Link href="/" className="hover:text-black transition-colors">Trang chủ</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-gray-800 truncate max-w-[200px] md:max-w-md">{article.title}</span>
-          </nav>
+      {/* Breadcrumb - Chỉ hiển thị cho bài viết không phải của Admin */}
+      {article.type !== 'Admin' ? (
+        <div className="container mx-auto px-4 lg:px-6 pt-5 pb-6">
+          <div className="max-w-[800px] mx-auto">
+            <nav className="flex items-center gap-2 text-[12px] font-medium text-gray-400 uppercase tracking-widest justify-start">
+              <Link href="/" className="hover:text-black transition-colors"><Home className="w-3.5 h-3.5" /></Link>
+              <ChevronRight className="w-3 h-3" />
+              <Link href="/" className="hover:text-black transition-colors">Trang chủ</Link>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-gray-800 truncate max-w-[200px] md:max-w-md">{article.title}</span>
+            </nav>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="h-10 w-full" /> // Spacer để bù khoảng trống cho tiêu đề Admin
+      )}
 
       {/* Main Container for Header and Content */}
       <main className="container mx-auto px-4 lg:px-6 mb-20 md:mb-24">
