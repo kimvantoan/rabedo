@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 
 export default async function Home() {
   let articles: any[] = [];
+  let dbError: string | null = null;
 
   try {
     articles = await prisma.articles.findMany({
@@ -12,8 +13,9 @@ export default async function Home() {
       orderBy: { created_at: 'desc' },
       take: 12,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error("PRISMA ERROR:", err);
+    dbError = String(err.message || err);
   }
 
   // Hàm loại bỏ thẻ HTML để trích xuất văn bản làm Mô tả ngắn gọn (Description)
@@ -35,6 +37,13 @@ export default async function Home() {
             Cập nhật những bài viết, tin điểm nhấn và những hành trình khám phá mới nhất.
           </p>
         </div>
+
+        {dbError && (
+          <div className="mb-8 p-6 bg-red-100 border-2 border-red-500 rounded-xl text-red-900 font-mono text-sm break-all shadow-md">
+            <strong> LỖI KẾT NỐI DATABASE TRÊN CPANEL:</strong><br/><br/>
+            {dbError}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => {
@@ -59,7 +68,7 @@ export default async function Home() {
             );
           })}
 
-          {articles.length === 0 && (
+          {articles.length === 0 && !dbError && (
             <div className="col-span-full py-20 text-center text-muted-foreground bg-muted/20 rounded-2xl border border-dashed border-border/60">
               Hiện tại chưa có bài viết nào được xuất bản.
             </div>

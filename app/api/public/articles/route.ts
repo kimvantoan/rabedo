@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
@@ -26,8 +27,7 @@ export async function GET(request: NextRequest) {
       skip: (page - 1) * perPage,
       take: perPage,
     });
-
-    const safeArticles = articles.map(article => ({
+    const safeArticles = articles.map((article: any) => ({
       ...article,
       id: Number(article.id),
       created_at: article.created_at?.toISOString() ?? null,

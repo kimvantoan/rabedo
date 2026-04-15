@@ -35,8 +35,7 @@ export async function GET(request: NextRequest) {
       skip: (page - 1) * perPage,
       take: perPage,
     });
-
-    const safeArticles = articles.map(a => ({
+    const safeArticles = articles.map((a: any) => ({
       ...a,
       id: Number(a.id),
       created_at: a.created_at?.toISOString() ?? null,
