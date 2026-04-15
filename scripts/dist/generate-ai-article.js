@@ -1,46 +1,7 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
-const client_1 = require("@prisma/client");
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const crypto_1 = __importDefault(require("crypto"));
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import * as fs from 'fs';
+import * as path from 'path';
 // ─── Lock File Guard ──────────────────────────────────────────────────────────
 // Prevents multiple instances from running concurrently (e.g. overlapping crons)
 // Use __dirname so paths are correct regardless of cron's working directory
@@ -69,7 +30,7 @@ function releaseLock() {
     catch { }
 }
 // ─────────────────────────────────────────────────────────────────────────────
-const prisma = new client_1.PrismaClient();
+const prisma = new PrismaClient();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 function slugify(text) {
     return text.toString().toLowerCase()
@@ -119,42 +80,42 @@ async function main() {
         return;
     }
     const promptText = `
-Bạn là một blogger du lịch nổi tiếng. Đầu tiên, hãy TỰ DO SÁNG TẠO MỘT CHỦ ĐỀ BLOG DU LỊCH HOÀN TOÀN MỚI, cực kỳ ngẫu nhiên và hấp dẫn (Ví dụ: một điểm đến hoang sơ ít người biết, quán xá bí ẩn, làng chài cổ, kinh nghiệm sinh tồn, vẻ đẹp thay đổi theo mùa, văn hoá ẩm thực độc lạ, tips tiết kiệm...).
-Sau đó, hãy viết một bài blog hoàn chỉnh về chủ đề đó.
+Hãy đóng vai một phóng viên, biên tập viên tin tức du lịch chuyên nghiệp.
+Nhiệm vụ: Sáng tạo một **Bài báo/Phóng sự tin tức du lịch** hoàn toàn mới (ví dụ: phát hiện một địa điểm mới, sự kiện văn hóa, phân tích xu hướng du lịch, điểm đến hoang sơ, ẩm thực độc lạ).
 
 PHONG CÁCH VIẾT (BẮT BUỘC):
-- Viết như một người đang kể lại hành trình, trải nghiệm thực tế — ấm áp, gần gũi, đầy cảm xúc.
-- Chỉ dùng <h2> cho những tiêu đề chính chuyển giai đoạn câu chuyện (không đánh số).
-- Đan xen cảm nhận cá nhân, mô tả cảnh vật sống động, chia sẻ tip thực tế.
-- BÀI VIẾT PHẢI THẬT DÀI VÀ CHI TIẾT (TỐI THIỂU 1500-2000 TỪ).
-- Bắt buộc chèn 4-5 ảnh minh hoạ rải đều trong bài viết bằng cú pháp [IMAGE: highly descriptive english image generation prompt].
-  (Ví dụ: [IMAGE: a breathtaking view of terraced rice fields in Sapa during golden hour, warm sunlight, majestic mountains, highly detailed, photorealistic, cinematic lighting])
-- Prompt ảnh phải hoàn toàn bằng Tiếng Anh, dài và mô tả chi tiết phong cảnh, ánh sáng, hoặc sự việc đang xảy ra trong bài.
-- KHÔNG chứa thẻ <h1>.
+- Viết dưới dạng **Tin tức báo chí (News/Reportage)**, dùng **văn xuôi** trang trọng, khách quan nhưng hấp dẫn và cuốn hút. Không viết kiểu nhật ký blog cá nhân.
+- Tựa đề (Title) mang tính giật tít báo chí, thu hút sự chú ý.
+- BÀI VIẾT PHẢI RẤT DÀI, CHI TIẾT VÀ CHUYÊN SÂU (Tối thiểu 2000 chữ). Tuyệt đối không được viết nửa chừng rồi cắt ngang câu. Phải có phần mở đầu, diễn biến trang trọng và kết luận rõ ràng.
+- Đan xen các đoạn phỏng vấn giả định, số liệu hoặc góc nhìn văn hóa đa chiều.
+- Bắt buộc chèn 4-5 ẢNH THỰC TẾ minh hoạ rải đều giữa các đoạn văn bằng cú pháp: [IMAGE: keyword1,keyword2,keyword3]
+  (Ví dụ: [IMAGE: vietnam,market,people] hoặc [IMAGE: sapa,terraces,rice] hoặc [IMAGE: hanoi,street,food])
+- Prompt ảnh BẮT BUỘC chỉ gồm 2-3 từ khoá tiếng Anh cực ngắn, cách nhau bằng dấu phẩy, KHÔNG CÓ KHOẢNG TRẮNG, miêu tả đúng địa điểm/bối cảnh để lấy nhiếp ảnh đời thực. Tuyệt đối không viết thành câu dài.
+- KHÔNG dùng thẻ <h1>. Chỉ dùng thẻ <h2>, <h3> đan xen văn xuôi (<p>).
 
-TRẢ VỀ ĐÚNG FORMAT VĂN BẢN DUY NHẤT SAU (Không dùng Markdown JSON code block, phân tách bằng đúng 3 dòng phân cách như bên dưới):
+TRẢ VỀ ĐÚNG FORMAT:
 ---TITLE---
-Tiêu đề blog hấp dẫn
+Tiêu đề báo chí giật tít
 ---KEYWORD---
-highly descriptive english prompt for the thumbnail image
+2 to 3 english keywords for thumbnail image separated by comma
 ---CONTENT---
-Toàn bộ HTML nội dung blog phong cách kể chuyện
+Toàn bộ HTML nội dung bài báo
 `;
     const payload = {
         systemInstruction: {
-            parts: [{ text: 'Bạn là blogger du lịch nổi tiếng. Bắt buộc trả về đúng định dạng ---TITLE---, ---KEYWORD---, ---CONTENT---' }]
+            parts: [{ text: 'Bạn là nhà báo du lịch. Bắt buộc trả về đúng định dạng ---TITLE---, ---KEYWORD---, ---CONTENT---' }]
         },
         contents: [
             { parts: [{ text: promptText }] }
         ],
         generationConfig: {
-            temperature: 0.85,
-            maxOutputTokens: 4096,
+            temperature: 0.8,
+            maxOutputTokens: 8192,
             responseMimeType: 'text/plain',
         }
     };
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -170,7 +131,7 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
             return;
         }
         let title = '';
-        let thumbKw = 'vietnam travel';
+        let thumbKw = 'vietnamese travel destination beautiful';
         let content = '';
         const titleMatch = rawText.match(/---TITLE---\s*([\s\S]*?)\s*---KEYWORD---/);
         const keywordMatch = rawText.match(/---KEYWORD---\s*([\s\S]*?)\s*---CONTENT---/);
@@ -185,29 +146,20 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
             console.error('Failed to parse text format from Gemini.');
             return;
         }
-        // 2. Download thumbnail
-        const thumbnailPath = await downloadFromPollinations(thumbKw, 'thumbnail');
-        console.log(`Thumbnail saved: ${thumbnailPath || 'FAILED'}`);
-        // 3. Process [IMAGE:xxx] inside content — all downloads in parallel
+        // ── 2. Create Thumbnail URL directly (No Download) ────────────────────────
+        let cleanThumbKw = thumbKw.toLowerCase().replace(/[^a-z0-9]/g, ',');
+        cleanThumbKw = cleanThumbKw.replace(/,+/g, ',').replace(/^,/, '').replace(/,$/, '').substring(0, 30);
+        const thumbnailPath = `https://loremflickr.com/1200/800/${cleanThumbKw || 'vietnam,nature'}?lock=${Math.floor(Math.random() * 10000)}`;
+        // ── 3. Replace [IMAGE:xxx] placeholders directly (No Download) ─────────
         const regex = /\[IMAGE:\s*([^\]]+?)\s*\]/gui;
-        let match;
-        const tasks = [];
-        while ((match = regex.exec(content)) !== null) {
-            tasks.push({ original: match[0], rawKeyword: match[1].trim(), keyword: match[1].trim().toLowerCase().replace(/[\s_]+/g, ',') });
-        }
-        const imgPaths = [];
-        for (const t of tasks) {
-            const p = await downloadFromPollinations(t.keyword, 'content');
-            imgPaths.push(p);
-        }
-        for (let i = 0; i < tasks.length; i++) {
-            const { original, rawKeyword } = tasks[i];
-            const imgPath = imgPaths[i];
-            const newHtml = imgPath
-                ? `<figure><img src="/storage/${imgPath}" alt="${rawKeyword}" style="width:100%;height:auto;display:block;margin:24px 0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:-16px;margin-bottom:24px;">${rawKeyword.replace(/,/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</figcaption></figure>`
-                : '';
-            content = content.replace(original, newHtml);
-        }
+        content = content.replace(regex, (match, p1) => {
+            const prompt = p1.trim();
+            let cleanKw = prompt.toLowerCase().replace(/[^a-z0-9]/g, ',');
+            cleanKw = cleanKw.replace(/,+/g, ',').replace(/^,/, '').replace(/,$/, '').substring(0, 30);
+            const imgUrl = `https://loremflickr.com/1200/800/${cleanKw || 'vietnam,travel'}?lock=${Math.floor(Math.random() * 10000)}`;
+            const caption = prompt.replace(/,/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+            return `<figure><img src="${imgUrl}" alt="${prompt}" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;margin:24px 0;border-radius:8px;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:12px;margin-bottom:24px;font-style:italic;">${caption}</figcaption></figure>`;
+        });
         // 4. Save to Database using Prisma
         const fakeAuthors = [
             'Minh Nhật', 'Thanh Hương', 'Quốc Bảo', 'Lan Anh', 'Trí Dũng',
@@ -215,13 +167,14 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
             'Ngọc Hà', 'Tiến Phong', 'Bảo Châu', 'Việt Anh', 'Hồng Nhung'
         ];
         const author = fakeAuthors[Math.floor(Math.random() * fakeAuthors.length)];
-        const slug = slugify(title) + '-' + crypto_1.default.randomBytes(4).toString('hex');
+        const finalTitle = title.substring(0, 200);
+        const slug = slugify(finalTitle).substring(0, 100) + '-' + Math.random().toString(36).substring(2, 10);
         const article = await prisma.articles.create({
             data: {
-                title: title,
+                title: finalTitle,
                 slug: slug,
                 content: content,
-                thumbnail: thumbnailPath ? `/storage/${thumbnailPath}` : null,
+                thumbnail: thumbnailPath ? thumbnailPath : null,
                 author: author,
                 type: 'news',
                 created_at: new Date(),

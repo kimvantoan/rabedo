@@ -33,6 +33,7 @@ export function ArticleCard({
         <img
           src={thumbnail}
           alt={title}
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
