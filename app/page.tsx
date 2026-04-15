@@ -52,7 +52,7 @@ export default async function Home() {
                 title={article.title}
                 description={stripHtml(article.content || "")}
                 thumbnail={thumbnail}
-                slug={article.slug || article.id.toString()}
+                slug={article.id.toString()}
                 date={publishDate}
                 author={article.author || "Quản trị viên"}
               />

@@ -16,9 +16,16 @@ const stripHtml = (html: string) => {
 // Dynamic SEO Metadata
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-
   try {
-    const article = await prisma.articles.findUnique({ where: { slug } });
+    const numericId = parseInt(slug, 10);
+    const article = await prisma.articles.findFirst({
+      where: {
+        OR: [
+          { id: isNaN(numericId) ? -1 : numericId },
+          { slug: slug }
+        ]
+      }
+    });
     if (!article) return { title: "Không tìm thấy bài viết" };
 
     const description = stripHtml(article.content);
@@ -48,7 +55,15 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
   let article;
   try {
-    article = await prisma.articles.findUnique({ where: { slug } });
+    const numericId = parseInt(slug, 10);
+    article = await prisma.articles.findFirst({
+      where: {
+        OR: [
+          { id: isNaN(numericId) ? -1 : numericId },
+          { slug: slug }
+        ]
+      }
+    });
     if (!article) return notFound();
   } catch (err) {
     return notFound();

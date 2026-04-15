@@ -136,7 +136,7 @@ export default function AdminPage() {
                   </td>
                   <td className="px-6 py-4">
                     <a
-                      href={`/articles/${article.slug || article.id}`}
+                      href={`/articles/${article.id}`}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-1.5 text-primary hover:underline hover:text-primary/80 transition-colors bg-primary/5 px-2.5 py-1 rounded-md text-sm font-medium"

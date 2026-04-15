@@ -71,16 +71,16 @@ PHONG CÁCH VIẾT (BẮT BUỘC):
 - Tựa đề (Title) mang tính giật tít báo chí, thu hút sự chú ý.
 - BÀI VIẾT PHẢI RẤT DÀI, CHI TIẾT VÀ CHUYÊN SÂU (Tối thiểu 2000 chữ). Tuyệt đối không được viết nửa chừng rồi cắt ngang câu. Phải có phần mở đầu, diễn biến trang trọng và kết luận rõ ràng.
 - Đan xen các đoạn phỏng vấn giả định, số liệu hoặc góc nhìn văn hóa đa chiều.
-- Bắt buộc chèn 4-5 ẢNH THỰC TẾ minh hoạ rải đều giữa các đoạn văn bằng cú pháp: [IMAGE: keyword1,keyword2,keyword3]
-  (Ví dụ: [IMAGE: vietnam,market,people] hoặc [IMAGE: sapa,terraces,rice] hoặc [IMAGE: hanoi,street,food])
-- Prompt ảnh BẮT BUỘC chỉ gồm 2-3 từ khoá tiếng Anh cực ngắn, cách nhau bằng dấu phẩy, KHÔNG CÓ KHOẢNG TRẮNG, miêu tả đúng địa điểm/bối cảnh để lấy nhiếp ảnh đời thực. Tuyệt đối không viết thành câu dài.
+- Bắt buộc chèn 4-5 ẢNH THỰC TẾ minh hoạ rải đều giữa các đoạn văn bằng cú pháp: [IMAGE: Search Query]
+  (Ví dụ: [IMAGE: Vietnam Da Lat Night Market] hoặc [IMAGE: Sapa Rice Terraces] hoặc [IMAGE: Hanoi Old Quarter Food])
+- Prompt ảnh BẮT BUỘC là NHỮNG TỪ KHOÁ TÌM KIẾM (Search Query) cực ngắn bằng tiếng Anh ghép lại, chỉ chứa Tên địa danh và Đặc tả để lôi ảnh thật từ Bing Search. KHÔNG viết thành câu.
 - KHÔNG dùng thẻ <h1>. Chỉ dùng thẻ <h2>, <h3> đan xen văn xuôi (<p>).
 
 TRẢ VỀ ĐÚNG FORMAT:
 ---TITLE---
 Tiêu đề báo chí giật tít
 ---KEYWORD---
-2 to 3 english keywords for thumbnail image separated by comma
+Short english search query for the main thumbnail image
 ---CONTENT---
 Toàn bộ HTML nội dung bài báo
 `;
@@ -92,7 +92,7 @@ Toàn bộ HTML nội dung bài báo
     };
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
     );
 
@@ -117,18 +117,16 @@ Toàn bộ HTML nội dung bài báo
     let content = contentMatch[1].trim();
 
     // ── 2. Create Thumbnail URL directly (No Download) ────────────────────────
-    let cleanThumbKw = thumbKw.toLowerCase().replace(/[^a-z0-9]/g, ',');
-    cleanThumbKw = cleanThumbKw.replace(/,+/g, ',').replace(/^,/, '').replace(/,$/, '').substring(0, 30);
-    const thumbnailPath = `https://loremflickr.com/1200/800/${cleanThumbKw || 'vietnam,nature'}?lock=${Math.floor(Math.random() * 10000)}`;
+    let cleanThumbKw = encodeURIComponent((thumbKw || 'vietnam travel').trim() + " Unsplash photography");
+    const thumbnailPath = `https://tse1.mm.bing.net/th?q=${cleanThumbKw}&w=1200&h=800&c=7&rs=1`;
 
     // ── 3. Replace [IMAGE:xxx] placeholders directly (No Download) ─────────
     const regex = /\[IMAGE:\s*([^\]]+?)\s*\]/gui;
     content = content.replace(regex, ((match: string, p1: string) => {
       const prompt = p1.trim();
-      let cleanKw = prompt.toLowerCase().replace(/[^a-z0-9]/g, ',');
-      cleanKw = cleanKw.replace(/,+/g, ',').replace(/^,/, '').replace(/,$/, '').substring(0, 30);
-      const imgUrl = `https://loremflickr.com/1200/800/${cleanKw || 'vietnam,travel'}?lock=${Math.floor(Math.random() * 10000)}`;
-      const caption = prompt.replace(/,/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+      const encodedPrompt = encodeURIComponent(prompt + " Unsplash photography");
+      const imgUrl = `https://tse1.mm.bing.net/th?q=${encodedPrompt}&w=800&h=533&c=7&rs=1`;
+      const caption = prompt.replace(/\b\w/g, (l: string) => l.toUpperCase());
       return `<figure><img src="${imgUrl}" alt="${prompt}" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;margin:24px 0;border-radius:8px;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:12px;margin-bottom:24px;font-style:italic;">${caption}</figcaption></figure>`;
     }));
 
