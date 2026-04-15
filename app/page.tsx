@@ -1,18 +1,16 @@
 import { ArticleCard } from "@/components/article-card";
 import { Header } from "@/components/header";
+import prisma from "@/lib/prisma";
 
 export default async function Home() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   let articles: any[] = [];
 
   try {
-    const res = await fetch(`${apiUrl}/api/public/articles?type=news`, {
-      cache: 'no-store'
+    articles = await prisma.articles.findMany({
+      where: { type: 'news' },
+      orderBy: { created_at: 'desc' },
+      take: 12,
     });
-    if (res.ok) {
-      const data = await res.json();
-      articles = data.data || [];
-    }
   } catch (err) {
     console.error(err);
   }
@@ -40,10 +38,10 @@ export default async function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => {
             const thumbnail = article.thumbnail
-              ? (article.thumbnail.startsWith('http') ? article.thumbnail : `${apiUrl}${article.thumbnail}`)
+              ? (article.thumbnail.startsWith('http') ? article.thumbnail : article.thumbnail)
               : 'https://images.unsplash.com/photo-1499750310107-5fef28a66643';
 
-            const publishDate = new Date(article.created_at).toLocaleDateString("vi-VN", {
+            const publishDate = new Date(article.created_at ?? new Date()).toLocaleDateString("vi-VN", {
               day: '2-digit', month: '2-digit', year: 'numeric'
             });
 

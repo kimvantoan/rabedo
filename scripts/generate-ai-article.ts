@@ -4,10 +4,38 @@ import * as fs from 'fs';
 import * as path from 'path';
 import crypto from 'crypto';
 
+// ─── Lock File Guard ──────────────────────────────────────────────────────────
+// Prevents multiple instances from running concurrently (e.g. overlapping crons)
+// Use __dirname so paths are correct regardless of cron's working directory
+const SCRIPT_DIR = path.resolve(__dirname);
+const APP_ROOT = path.resolve(SCRIPT_DIR, '..');
+const LOCK_FILE = path.join(SCRIPT_DIR, '.generate-ai-article.lock');
+const LOCK_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes — kill stale lock
+
+function acquireLock(): boolean {
+  if (fs.existsSync(LOCK_FILE)) {
+    const stat = fs.statSync(LOCK_FILE);
+    const age = Date.now() - stat.mtimeMs;
+    if (age < LOCK_TIMEOUT_MS) {
+      console.log(`[LOCK] Another instance is running (lock age: ${Math.round(age / 1000)}s). Exiting.`);
+      return false;
+    }
+    console.log(`[LOCK] Stale lock detected (age: ${Math.round(age / 1000)}s). Overriding.`);
+  }
+  fs.writeFileSync(LOCK_FILE, String(process.pid));
+  return true;
+}
+
+function releaseLock(): void {
+  try {
+    if (fs.existsSync(LOCK_FILE)) fs.unlinkSync(LOCK_FILE);
+  } catch { }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 const prisma = new PrismaClient();
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const APP_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function slugify(text: string) {
   return text.toString().toLowerCase()
@@ -26,11 +54,11 @@ async function downloadFromPollinations(keywords: string, prefix: string): Promi
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
-    
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout (reduced from 60s)
+
     const response = await fetch(imgUrl, { signal: controller.signal });
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       console.warn(`Failed to generate AI image for: ${keywords}`);
       return null;
@@ -42,7 +70,8 @@ async function downloadFromPollinations(keywords: string, prefix: string): Promi
     const filename = `${prefix}_${uniqueSuffix}.jpg`;
 
     // Save to Next.js public/storage/content-images
-    const uploadDir = path.join(process.cwd(), 'public', 'storage', 'content-images');
+    // Use APP_ROOT (derived from __dirname) to get correct path in cron context
+    const uploadDir = path.join(APP_ROOT, 'public', 'storage', 'content-images');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -73,15 +102,16 @@ PHONG CÁCH VIẾT (BẮT BUỘC):
 - Chỉ dùng <h2> cho những tiêu đề chính chuyển giai đoạn câu chuyện (không đánh số).
 - Đan xen cảm nhận cá nhân, mô tả cảnh vật sống động, chia sẻ tip thực tế.
 - BÀI VIẾT PHẢI THẬT DÀI VÀ CHI TIẾT (TỐI THIỂU 1500-2000 TỪ).
-- Trong nội dung phải chèn 4-5 ảnh minh họa rải đều khắp bài bằng placeholder: [IMAGE: your english keywords]
-  Ví dụ: [IMAGE: sapa terraced rice fields in morning mist]
+- Bắt buộc chèn 4-5 ảnh minh hoạ rải đều trong bài viết bằng cú pháp [IMAGE: highly descriptive english image generation prompt].
+  (Ví dụ: [IMAGE: a breathtaking view of terraced rice fields in Sapa during golden hour, warm sunlight, majestic mountains, highly detailed, photorealistic, cinematic lighting])
+- Prompt ảnh phải hoàn toàn bằng Tiếng Anh, dài và mô tả chi tiết phong cảnh, ánh sáng, hoặc sự việc đang xảy ra trong bài.
 - KHÔNG chứa thẻ <h1>.
 
 TRẢ VỀ ĐÚNG FORMAT VĂN BẢN DUY NHẤT SAU (Không dùng Markdown JSON code block, phân tách bằng đúng 3 dòng phân cách như bên dưới):
 ---TITLE---
 Tiêu đề blog hấp dẫn
 ---KEYWORD---
-english travel keyword thumbnail
+highly descriptive english prompt for the thumbnail image
 ---CONTENT---
 Toàn bộ HTML nội dung blog phong cách kể chuyện
 `;
@@ -101,7 +131,7 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
   };
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -141,31 +171,27 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
     const thumbnailPath = await downloadFromPollinations(thumbKw, 'thumbnail');
     console.log(`Thumbnail saved: ${thumbnailPath || 'FAILED'}`);
 
-    // 3. Process [IMAGE:xxx] inside content
+    // 3. Process [IMAGE:xxx] inside content — all downloads in parallel
     const regex = /\[IMAGE:\s*([^\]]+?)\s*\]/gui;
     let match;
-    const replacements: { original: string, newHtml: string }[] = [];
-
-    // Find all matches first
+    const tasks: { original: string; rawKeyword: string; keyword: string }[] = [];
     while ((match = regex.exec(content)) !== null) {
-      const original = match[0];
-      const rawKeyword = match[1].trim();
-      const keyword = rawKeyword.toLowerCase().replace(/[\s_]+/g, ',');
-
-      const imgPath = await downloadFromPollinations(keyword, 'content');
-
-      if (imgPath) {
-        const publicUrl = `/storage/${imgPath}`;
-        const newHtml = `<figure><img src="${publicUrl}" alt="${rawKeyword}" style="width:100%;height:auto;display:block;margin:24px 0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:-16px;margin-bottom:24px;">${rawKeyword.replace(/,/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</figcaption></figure>`;
-        replacements.push({ original, newHtml });
-      } else {
-        replacements.push({ original, newHtml: '' });
-      }
+      tasks.push({ original: match[0], rawKeyword: match[1].trim(), keyword: match[1].trim().toLowerCase().replace(/[\s_]+/g, ',') });
     }
 
-    // Replace all matches
-    for (const rep of replacements) {
-      content = content.replace(rep.original, rep.newHtml);
+    const imgPaths = [];
+    for (const t of tasks) {
+      const p = await downloadFromPollinations(t.keyword, 'content');
+      imgPaths.push(p);
+    }
+
+    for (let i = 0; i < tasks.length; i++) {
+      const { original, rawKeyword } = tasks[i];
+      const imgPath = imgPaths[i];
+      const newHtml = imgPath
+        ? `<figure><img src="/storage/${imgPath}" alt="${rawKeyword}" style="width:100%;height:auto;display:block;margin:24px 0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:-16px;margin-bottom:24px;">${rawKeyword.replace(/,/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</figcaption></figure>`
+        : '';
+      content = content.replace(original, newHtml);
     }
 
     // 4. Save to Database using Prisma
@@ -199,4 +225,14 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
   }
 }
 
-main();
+// ─── Lock-guarded entry point ─────────────────────────────────────────────────
+// Always release lock on exit (crash, SIGTERM, SIGINT, etc.)
+process.on('exit', releaseLock);
+process.on('SIGTERM', () => { releaseLock(); process.exit(0); });
+process.on('SIGINT', () => { releaseLock(); process.exit(0); });
+
+if (!acquireLock()) {
+  process.exit(0); // Another instance running — exit cleanly without spawning anything
+}
+
+main().finally(releaseLock);

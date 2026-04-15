@@ -132,7 +132,7 @@ export default function AdminPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-muted-foreground font-medium">
-                    {new Date(article.created_at).toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    {new Date(article.created_at ?? Date.now()).toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit', year: 'numeric' })}
                   </td>
                   <td className="px-6 py-4">
                     <a

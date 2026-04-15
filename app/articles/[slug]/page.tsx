@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { Metadata } from "next";
 import { Header } from "@/components/header";
+import prisma from "@/lib/prisma";
 
 // Hàm hỗ trợ loại bỏ thẻ HTML để lấy mô tả ngắn
 const stripHtml = (html: string) => {
@@ -14,17 +15,12 @@ const stripHtml = (html: string) => {
 // Dynamic SEO Metadata
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
-    const res = await fetch(`${apiUrl}/api/public/articles/${slug}`, {
-      cache: 'no-store'
-    });
-    if (!res.ok) return { title: "Không tìm thấy bài viết" };
+    const article = await prisma.articles.findUnique({ where: { slug } });
+    if (!article) return { title: "Không tìm thấy bài viết" };
 
-    const article = await res.json();
     const description = stripHtml(article.content);
-
     return {
       title: `${article.title} | RabedoNews`,
       description: description,
@@ -33,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description: description,
         images: [
           {
-            url: article.thumbnail ? (article.thumbnail.startsWith('http') ? article.thumbnail : `${apiUrl}${article.thumbnail}`) : '/placeholder.png',
+            url: article.thumbnail ? (article.thumbnail.startsWith('http') ? article.thumbnail : article.thumbnail) : '/placeholder.png',
             width: 1200,
             height: 630,
             alt: article.title,
@@ -48,19 +44,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
   let article;
   try {
-    const res = await fetch(`${apiUrl}/api/public/articles/${slug}`, {
-      cache: 'no-store'
-    });
-
-    if (!res.ok) {
-      return notFound();
-    }
-
-    article = await res.json();
+    article = await prisma.articles.findUnique({ where: { slug } });
+    if (!article) return notFound();
   } catch (err) {
     return notFound();
   }
@@ -70,7 +58,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   contentHTML = contentHTML.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ');
 
   // Định dạng ngày
-  const publishDate = new Date(article.created_at).toLocaleDateString("vi-VN", {
+  const publishDate = new Date(article.created_at ?? new Date()).toLocaleDateString("vi-VN", {
     month: 'long', day: 'numeric', year: 'numeric'
   });
 
