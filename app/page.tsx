@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { ArticleCard } from "@/components/article-card";
 import { Header } from "@/components/header";
 import prisma from "@/lib/prisma";

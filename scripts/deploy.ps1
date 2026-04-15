@@ -32,6 +32,12 @@ Copy-Item -Recurse -Force ".next\static" ".next\standalone\.next\static"
 # Step 3: Copy App.js Startup entrypoint for cPanel
 Copy-Item -Force "app.js" ".next\standalone\app.js"
 
+# Step 3a: Copy Prisma schema for Linux Production Generation
+if (Test-Path "prisma") {
+    Copy-Item -Recurse -Force "prisma" ".next\standalone\prisma"
+    Write-Host "[SUCCESS] Prisma schema included in package." -ForegroundColor Green
+}
+
 # Step 3b: Copy compiled cron script into package
 if (Test-Path "scripts\dist\generate-ai-article.js") {
     New-Item -ItemType Directory -Force ".next\standalone\scripts\dist" | Out-Null
@@ -45,13 +51,33 @@ if (Test-Path $DestinationFile) {
     Remove-Item $DestinationFile -Force
 }
 
-Write-Host "[PACKAGE] Removing conflicting node_modules to satisfy CloudLinux virtualenv..." -ForegroundColor Yellow
+Write-Host "[PACKAGE] Including standalone node_modules but renaming it to bundled_modules to avoid cPanel Symlink conflict..." -ForegroundColor Yellow
 if (Test-Path ".next\standalone\node_modules") {
-    Remove-Item -Recurse -Force ".next\standalone\node_modules"
+    Rename-Item ".next\standalone\node_modules" "bundled_modules" -Force
+}
+
+$pkgJsonPath = ".next\standalone\package.json"
+if (Test-Path $pkgJsonPath) {
+    $pkgJson = Get-Content $pkgJsonPath | ConvertFrom-Json
+    $pkgJson.PSObject.Properties.Remove('devDependencies')
+    $pkgJson | ConvertTo-Json -Depth 10 | Set-Content $pkgJsonPath
+}
+
+Write-Host "[PACKAGE] Patching server.js to read from bundled_modules to magically bypass cPanel physical symlink lock..." -ForegroundColor Yellow
+$serverJsPath = ".next\standalone\server.js"
+if (Test-Path $serverJsPath) {
+    $serverJsContent = Get-Content $serverJsPath -Raw
+    $patch = "require('module').globalPaths.push(__dirname + '/bundled_modules');`n" + $serverJsContent
+    $patch | Set-Content $serverJsPath
+}
+
+Write-Host "[PACKAGE] Fixing Next.js Turbopack Prisma Hash bug..." -ForegroundColor Yellow
+if (Test-Path ".next\standalone\bundled_modules\@prisma\client") {
+    Copy-Item -Recurse -Force ".next\standalone\bundled_modules\@prisma\client" ".next\standalone\bundled_modules\@prisma\client-2c3a283f134fdcb6"
 }
 
 Write-Host "[PACKAGE] Compressing files into zip archive..." -ForegroundColor Yellow
 Compress-Archive -Path ".next\standalone\*" -DestinationPath $DestinationFile -Force
 
 Write-Host "[SUCCESS] ALL DONE! File created: $DestinationFile" -ForegroundColor Green
-Write-Host "[INFO] Upload rabedo-deploy.zip to cPanel, extract it, and set app.js as Passenger startup file." -ForegroundColor Magenta
+Write-Host "[INFO] Upload rabedo-deploy.zip to cPanel, extract it (unzip -o), and set app.js as Passenger startup file." -ForegroundColor Magenta

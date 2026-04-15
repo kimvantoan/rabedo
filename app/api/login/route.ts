@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { signToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Email hoặc mật khẩu không chính xác.' }, { status: 401 });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const formattedPassword = user.password.replace(/^\$2y\$/, '$2a$');
+    const passwordMatch = await bcrypt.compare(password, formattedPassword);
 
     if (!passwordMatch) {
       return NextResponse.json({ message: 'Email hoặc mật khẩu không chính xác.' }, { status: 401 });

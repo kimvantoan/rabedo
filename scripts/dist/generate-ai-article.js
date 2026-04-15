@@ -1,22 +1,22 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function () { return m[k]; } };
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function (o, m, k, k2) {
+}) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function (o, v) {
+}) : function(o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function (o) {
+    var ownKeys = function(o) {
         ownKeys = Object.getOwnPropertyNames || function (o) {
             var ar = [];
             for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
@@ -127,15 +127,16 @@ PHONG CÁCH VIẾT (BẮT BUỘC):
 - Chỉ dùng <h2> cho những tiêu đề chính chuyển giai đoạn câu chuyện (không đánh số).
 - Đan xen cảm nhận cá nhân, mô tả cảnh vật sống động, chia sẻ tip thực tế.
 - BÀI VIẾT PHẢI THẬT DÀI VÀ CHI TIẾT (TỐI THIỂU 1500-2000 TỪ).
-- Trong nội dung phải chèn 4-5 ảnh minh họa rải đều khắp bài bằng placeholder: [IMAGE: your english keywords]
-  Ví dụ: [IMAGE: sapa terraced rice fields in morning mist]
+- Bắt buộc chèn 4-5 ảnh minh hoạ rải đều trong bài viết bằng cú pháp [IMAGE: highly descriptive english image generation prompt].
+  (Ví dụ: [IMAGE: a breathtaking view of terraced rice fields in Sapa during golden hour, warm sunlight, majestic mountains, highly detailed, photorealistic, cinematic lighting])
+- Prompt ảnh phải hoàn toàn bằng Tiếng Anh, dài và mô tả chi tiết phong cảnh, ánh sáng, hoặc sự việc đang xảy ra trong bài.
 - KHÔNG chứa thẻ <h1>.
 
 TRẢ VỀ ĐÚNG FORMAT VĂN BẢN DUY NHẤT SAU (Không dùng Markdown JSON code block, phân tách bằng đúng 3 dòng phân cách như bên dưới):
 ---TITLE---
 Tiêu đề blog hấp dẫn
 ---KEYWORD---
-english travel keyword thumbnail
+highly descriptive english prompt for the thumbnail image
 ---CONTENT---
 Toàn bộ HTML nội dung blog phong cách kể chuyện
 `;
@@ -153,7 +154,7 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
         }
     };
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -187,28 +188,25 @@ Toàn bộ HTML nội dung blog phong cách kể chuyện
         // 2. Download thumbnail
         const thumbnailPath = await downloadFromPollinations(thumbKw, 'thumbnail');
         console.log(`Thumbnail saved: ${thumbnailPath || 'FAILED'}`);
-        // 3. Process [IMAGE:xxx] inside content
+        // 3. Process [IMAGE:xxx] inside content — all downloads in parallel
         const regex = /\[IMAGE:\s*([^\]]+?)\s*\]/gui;
         let match;
-        const replacements = [];
-        // Find all matches first
+        const tasks = [];
         while ((match = regex.exec(content)) !== null) {
-            const original = match[0];
-            const rawKeyword = match[1].trim();
-            const keyword = rawKeyword.toLowerCase().replace(/[\s_]+/g, ',');
-            const imgPath = await downloadFromPollinations(keyword, 'content');
-            if (imgPath) {
-                const publicUrl = `/storage/${imgPath}`;
-                const newHtml = `<figure><img src="${publicUrl}" alt="${rawKeyword}" style="width:100%;height:auto;display:block;margin:24px 0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:-16px;margin-bottom:24px;">${rawKeyword.replace(/,/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</figcaption></figure>`;
-                replacements.push({ original, newHtml });
-            }
-            else {
-                replacements.push({ original, newHtml: '' });
-            }
+            tasks.push({ original: match[0], rawKeyword: match[1].trim(), keyword: match[1].trim().toLowerCase().replace(/[\s_]+/g, ',') });
         }
-        // Replace all matches
-        for (const rep of replacements) {
-            content = content.replace(rep.original, rep.newHtml);
+        const imgPaths = [];
+        for (const t of tasks) {
+            const p = await downloadFromPollinations(t.keyword, 'content');
+            imgPaths.push(p);
+        }
+        for (let i = 0; i < tasks.length; i++) {
+            const { original, rawKeyword } = tasks[i];
+            const imgPath = imgPaths[i];
+            const newHtml = imgPath
+                ? `<figure><img src="/storage/${imgPath}" alt="${rawKeyword}" style="width:100%;height:auto;display:block;margin:24px 0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:-16px;margin-bottom:24px;">${rawKeyword.replace(/,/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</figcaption></figure>`
+                : '';
+            content = content.replace(original, newHtml);
         }
         // 4. Save to Database using Prisma
         const fakeAuthors = [
