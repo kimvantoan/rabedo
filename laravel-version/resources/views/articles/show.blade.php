@@ -15,9 +15,8 @@
 @endsection
 
 @section('content')
-<div class="container mx-auto px-4 lg:px-6 mb-20 md:mb-24 bg-white pt-12">
-    <div class="max-w-[800px] mx-auto w-full text-left">
-        <h1 class="text-[32px] md:text-[40px] lg:text-[44px] font-extrabold text-[#1a1a1a] leading-[1.3] tracking-tight mb-5">
+<article class="mx-auto max-w-4xl w-full px-4 sm:px-6 lg:px-8 mb-20 md:mb-24 bg-white pt-12 text-left">
+    <h1 class="text-[32px] md:text-[40px] lg:text-[44px] font-extrabold text-[#1a1a1a] leading-[1.3] tracking-tight mb-5">
             {{ $article->title }}
         </h1>
         <div class="flex items-center gap-1.5 text-[14px] text-gray-400 font-sans flex-wrap mb-10 md:mb-12">
@@ -40,6 +39,6 @@
             [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-[18px] [&_li]:md:text-[20px] [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-justify">
             {!! $article->content !!}
         </div>
-    </div>
-</div>
+        </div>
+</article>
 @endsection

@@ -5,9 +5,9 @@
     <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Admin Dashboard</h1>
         <div class="flex space-x-3">
-            <a href="{{ route('admin.generate_ai') }}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 transition" onclick="this.innerHTML='Đang tạo... (tối đa 1 phút)';">
+            <button onclick="generateAi(this)" data-url="{{ route('admin.generate_ai') }}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 transition">
                 ✨ Tự động tạo bài AI
-            </a>
+            </button>
             <a href="{{ route('admin.editor') }}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 transition">
                 + Viết bài mới
             </a>
@@ -79,4 +79,40 @@
         {{ $articles->links() }}
     </div>
 </div>
+</div>
+
+<script>
+function generateAi(btn) {
+    if (btn.disabled) return;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Đang tạo... (tối đa 1 phút)';
+    btn.disabled = true;
+    btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+    fetch(btn.dataset.url, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json().then(data => ({status: res.status, body: data})))
+    .then(res => {
+        if (res.status === 200) {
+            alert(res.body.message || 'Khởi tạo bài viết thành công!');
+            window.location.reload();
+        } else {
+            alert('Lỗi: ' + (res.body.error || 'Có lỗi xảy ra'));
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Lỗi: Không thể kết nối tới máy chủ AI.');
+    })
+    .finally(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+    });
+}
+</script>
 @endsection

@@ -10,6 +10,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/articles/{idOrSlug}', [ArticleController::class, 'show'])->name('articles.show');
 
+Route::get('/proxy/image', [App\Http\Controllers\AiController::class, 'imageProxy'])->name('proxy.image');
+
+// Static Pages
+Route::get('/about', [App\Http\Controllers\PageController::class, 'about'])->name('page.about');
+Route::get('/privacy-policy', [App\Http\Controllers\PageController::class, 'privacy'])->name('page.privacy');
+Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('page.contact');
+Route::get('/disclaimer', [App\Http\Controllers\PageController::class, 'disclaimer'])->name('page.disclaimer');
+
 // Admin Routes (protected by auth middleware)
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');

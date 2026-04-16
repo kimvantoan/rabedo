@@ -98,7 +98,7 @@ class AdminController extends Controller
             $path = $file->storeAs('uploads', $filename, 'public');
             
             return response()->json([
-                'url' => asset('storage/' . $path)
+                'url' => '/storage/' . $path
             ]);
         }
         

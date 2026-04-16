@@ -7,13 +7,20 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch public articles (excluding Admin types or as per the old Next.js logic)
-        $articles = Article::where('type', '!=', 'Admin')
-                           ->orderBy('created_at', 'desc')
-                           ->paginate(10);
+        $query = Article::where('type', '!=', 'Admin');
+        $searchTerm = $request->input('q');
+
+        if (!empty($searchTerm)) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('content', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $articles = $query->orderBy('created_at', 'desc')->paginate(12);
                            
-        return view('home', compact('articles'));
+        return view('home', compact('articles', 'searchTerm'));
     }
 }
