@@ -48,25 +48,36 @@
     @if($articles->count() > 0)
         <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($articles as $article)
-            <article class="group relative flex flex-col bg-white border border-gray-200 shadow-sm transition-colors hover:bg-gray-50 cursor-pointer">
+            <article class="group relative flex flex-col bg-white border-0 transition-colors cursor-pointer">
                 @if($article->thumbnail)
-                    <div class="relative w-full aspect-[16/9] bg-gray-100 shrink-0">
-                        <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="object-cover w-full h-full" loading="lazy">
+                    <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] mb-4">
+                        <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="object-cover w-full h-full rounded-2xl" loading="lazy">
                     </div>
                 @endif
-                <div class="p-5 flex flex-col flex-1">
-                    <div class="flex items-center gap-x-3 text-xs mb-3 font-sans">
-                        <time datetime="{{ $article->created_at }}" class="text-gray-500 font-medium tracking-wide">
-                            {{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}
+                <div class="flex flex-col flex-1 px-1">
+                    <div class="text-[0.9rem] text-gray-500 mb-2 font-medium">
+                        <time datetime="{{ $article->created_at }}">
+                            {{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}
                         </time>
                     </div>
-                    <div class="mt-1">
-                        <h3 class="text-xl font-bold font-serif leading-snug text-gray-900 group-hover:text-red-700 line-clamp-3">
+                    <div class="mb-3">
+                        <h3 class="text-[1.25rem] font-bold font-sans leading-tight text-[#0a1e3f] group-hover:text-blue-700 line-clamp-2">
                             <a href="{{ route('articles.show', $article->id) }}">
                                 <span class="absolute inset-0"></span>
                                 {{ $article->title }}
                             </a>
                         </h3>
+                    </div>
+                    <div class="text-gray-600 text-[0.95rem] line-clamp-3 mb-4 leading-relaxed">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}
+                    </div>
+                    <div class="mt-auto flex justify-end">
+                        <span class="text-[#0a4830] font-bold text-sm flex items-center gap-1 group-hover:text-[#31e56b] transition-colors relative">
+                            Đọc tiếp
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[2.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </article>
