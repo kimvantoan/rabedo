@@ -37,7 +37,14 @@ class AdminController extends Controller
         $article->slug = \Illuminate\Support\Str::slug($validated['title']) . '-' . time();
         $article->content = $validated['content'];
         $article->type = 'Admin';
-        $article->author = \Faker\Factory::create('vi_VN')->name();
+        $fakeAuthors = [
+            'Arthur Pendelton', 'George Harrington', 'James Kensington', 'William Ashford',
+            'Oliver Croft', 'Benjamin Sterling', 'Harry Davies', 'Thomas Redcliff',
+            'Samuel Kingsley', 'Jack Montgomery', 'Amelia Thorne', 'Olivia Blackwood',
+            'Eleanor Stanhope', 'Charlotte Bradley', 'Emily Fairburn', 'Isla Chambers',
+            'Poppy Lancaster', 'Ava Pemberton', 'Isabella Carlisle', 'Jessica Whitmore'
+        ];
+        $article->author = $fakeAuthors[array_rand($fakeAuthors)];
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');

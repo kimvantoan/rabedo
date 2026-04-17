@@ -114,7 +114,13 @@ EOT;
             return '<figure><img src="' . $imgUrl . '" alt="' . htmlspecialchars($prompt) . '" loading="lazy" referrerpolicy="no-referrer" style="width:100%;height:auto;display:block;margin:24px 0;border-radius:0;" /><figcaption style="text-align:center;font-size:13px;color:#888;margin-top:12px;margin-bottom:24px;font-style:italic;">' . htmlspecialchars($caption) . '</figcaption></figure>';
         }, $content);
 
-        $fakeAuthors = ['Minh Nhật', 'Thanh Hương', 'Quốc Bảo', 'Lan Anh', 'Trí Dũng', 'Phương Linh', 'Hoàng Nam', 'Yến Nhi', 'Đức Thịnh', 'Thu Trang'];
+        $fakeAuthors = [
+            'Arthur Pendelton', 'George Harrington', 'James Kensington', 'William Ashford',
+            'Oliver Croft', 'Benjamin Sterling', 'Harry Davies', 'Thomas Redcliff',
+            'Samuel Kingsley', 'Jack Montgomery', 'Amelia Thorne', 'Olivia Blackwood',
+            'Eleanor Stanhope', 'Charlotte Bradley', 'Emily Fairburn', 'Isla Chambers',
+            'Poppy Lancaster', 'Ava Pemberton', 'Isabella Carlisle', 'Jessica Whitmore'
+        ];
         $author = $fakeAuthors[array_rand($fakeAuthors)];
         $finalTitle = substr($title, 0, 200);
         $slug = substr(Str::slug($finalTitle), 0, 100) . '-' . strtolower(Str::random(8));
@@ -125,7 +131,7 @@ EOT;
         $article->content = $content;
         $article->thumbnail = $thumbnailPath;
         $article->author = $author;
-        $article->type = 'Mới nhất'; 
+        $article->type = 'Latest'; 
         $article->save();
 
         if ($request->expectsJson()) {

@@ -7,8 +7,20 @@
     @yield('seo_meta')
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png">
+    @if(!request()->is('admin*'))
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4370452252708446"
      crossorigin="anonymous"></script>
+     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J7Y5ZEQ8HB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J7Y5ZEQ8HB');
+    </script>
+    @endif
     <!-- Google Fonts for Vietnamese -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,21 +48,19 @@
 </head>
 <body class="min-h-full flex flex-col antialiased bg-white text-black">
     <header class="border-b bg-white relative top-0 z-50">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center relative">
             <a href="{{ route('home') }}" class="flex items-center">
                 <img src="{{ asset('logo.png') }}" alt="Rabedo Logo" class="h-10 w-auto">
             </a>
-            <nav class="hidden sm:flex space-x-6">
-            </nav>
-            <div class="flex items-center space-x-4">
-                @auth
-                    <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-700 hover:text-black">Đến Dashboard</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">Đăng xuất</button>
-                    </form>
-                @endauth
+            @auth
+            <div class="absolute right-4 sm:right-6 lg:right-8 flex items-center space-x-4">
+                <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-700 hover:text-black">Đến Dashboard</a>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">Đăng xuất</button>
+                </form>
             </div>
+            @endauth
         </div>
     </header>
 
@@ -69,7 +79,7 @@
                 </div>
             </div>
             <div class="mt-8 border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-gray-500">&copy; {{ date('Y') }} Rabedo. Travel & News Blog.</p>
+                <p class="text-sm text-gray-500">&copy; {{ date('Y') }} Rabedo</p>
                 <div class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
                     <a href="{{ route('page.about') }}" class="hover:text-gray-900 transition">About Us</a>
                     <a href="{{ route('page.contact') }}" class="hover:text-gray-900 transition">Contact</a>

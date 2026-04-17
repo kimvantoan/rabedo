@@ -14,6 +14,13 @@ class ArticleController extends Controller
                           ->orWhere('slug', $idOrSlug)
                           ->firstOrFail();
 
-        return view('articles.show', compact('article'));
+        $article->increment('views');
+
+        $relatedArticles = Article::where('id', '!=', $article->id)
+                                  ->inRandomOrder()
+                                  ->take(6)
+                                  ->get();
+
+        return view('articles.show', compact('article', 'relatedArticles'));
     }
 }

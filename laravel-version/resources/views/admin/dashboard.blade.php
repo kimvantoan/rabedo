@@ -40,8 +40,9 @@
                 <tr>
                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">ID</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tiêu đề</th>
-                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phân loại</th>
+                    {{-- <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phân loại</th> --}}
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Ngày tạo</th>
+                    <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Lượt xem</th>
                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                         <span class="sr-only">Hành động</span>
                     </th>
@@ -52,10 +53,15 @@
                 <tr>
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $article->id }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-xs truncate">{{ $article->title }}</td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{-- <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         <span class="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">{{ $article->type }}</span>
-                    </td>
+                    </td> --}}
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
+                        <span class="inline-flex items-center rounded-full bg-gray-50 border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+                            {{ number_format($article->views ?? 0) }}
+                        </span>
+                    </td>
                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="{{ route('articles.show', $article->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3" target="_blank">Xem</a>
                         <a href="{{ route('admin.edit', $article->id) }}" class="text-green-600 hover:text-green-900 mr-3">Sửa</a>

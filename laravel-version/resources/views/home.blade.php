@@ -73,7 +73,7 @@
                     </div>
                     <div class="mt-auto flex justify-end">
                         <span class="text-[#0a4830] font-bold text-sm flex items-center gap-1 group-hover:text-[#31e56b] transition-colors relative">
-                            Đọc tiếp
+                            Read Article
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[2.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
@@ -87,7 +87,7 @@
             {{ $articles->links() }}
         </div>
     @else
-        <p class="text-gray-500">Chưa có bài viết nào.</p>
+        <p class="text-gray-500">No articles yet.</p>
     @endif
 </div>
 @endsection
