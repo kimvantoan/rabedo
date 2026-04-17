@@ -50,8 +50,8 @@
             @foreach($articles as $article)
             <article class="group relative flex flex-col bg-white border-0 transition-colors cursor-pointer">
                 @if($article->thumbnail)
-                    <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] mb-4">
-                        <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="object-cover w-full h-full rounded-2xl" loading="lazy">
+                    <div class="relative w-full h-48 sm:h-56 mb-4 rounded-2xl overflow-hidden shrink-0">
+                        <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="object-cover w-full h-full" loading="lazy">
                     </div>
                 @endif
                 <div class="flex flex-col flex-1 px-1">
