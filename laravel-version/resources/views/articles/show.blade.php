@@ -57,8 +57,8 @@
         @foreach($relatedArticles as $relArticle)
         <article class="group relative flex flex-col bg-white border-0 transition-colors cursor-pointer">
             @if($relArticle->thumbnail)
-                <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] mb-4">
-                    <img src="{{ asset($relArticle->thumbnail) }}" alt="{{ $relArticle->title }}" class="object-cover w-full h-full rounded-2xl" loading="lazy">
+                <div class="relative w-full h-48 sm:h-56 mb-4 rounded-2xl overflow-hidden shrink-0">
+                    <img src="{{ asset($relArticle->thumbnail) }}" alt="{{ $relArticle->title }}" class="object-cover w-full h-full" loading="lazy">
                 </div>
             @endif
             <div class="flex flex-col flex-1 px-1">
@@ -74,6 +74,17 @@
                             {{ $relArticle->title }}
                         </a>
                     </h3>
+                </div>
+                <div class="text-gray-600 text-[0.95rem] line-clamp-3 mb-4 leading-relaxed">
+                    {{ \Illuminate\Support\Str::limit(strip_tags($relArticle->content), 120) }}
+                </div>
+                <div class="mt-auto flex justify-end">
+                    <span class="text-[#0a4830] font-bold text-sm flex items-center gap-1 group-hover:text-[#31e56b] transition-colors relative">
+                        Read Article
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[2.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
                 </div>
             </div>
         </article>

@@ -10,12 +10,36 @@ class AdminController extends Controller
     // Apply basic auth middleware if needed
     // public function __construct() { $this->middleware('auth'); }
 
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::where('type', 'Admin')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-        return view('admin.dashboard', compact('articles'));
+        $query = Article::where('type', 'Admin');
+
+        if ($request->filled('q')) {
+            $searchTerm = $request->q;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('author', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $sortViews = $request->query('sort_views');
+        if (in_array($sortViews, ['asc', 'desc'])) {
+            $query->orderBy('views', $sortViews);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $articles = $query->paginate(15)->appends($request->query());
+            
+        // Get statistics of posts by each author (excluding AI, only Admin)
+        $authorStats = Article::select('author', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->where('type', 'Admin')
+            ->groupBy('author')
+            ->orderBy('total', 'desc')
+            ->paginate(15, ['*'], 'stats_page')
+            ->appends($request->query());
+
+        return view('admin.dashboard', compact('articles', 'authorStats', 'sortViews'));
     }
 
     public function editor()

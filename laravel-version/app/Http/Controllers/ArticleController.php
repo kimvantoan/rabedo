@@ -16,10 +16,20 @@ class ArticleController extends Controller
 
         $article->increment('views');
 
-        $relatedArticles = Article::where('id', '!=', $article->id)
-                                  ->inRandomOrder()
-                                  ->take(6)
-                                  ->get();
+        $query = Article::where('id', '!=', $article->id);
+
+        if ($article->type === 'Admin') {
+            $query->where('type', 'Admin');
+        } else {
+            $query->where(function($q) {
+                $q->where('type', '!=', 'Admin')
+                  ->orWhereNull('type');
+            });
+        }
+
+        $relatedArticles = $query->inRandomOrder()
+                                 ->take(6)
+                                 ->get();
 
         return view('articles.show', compact('article', 'relatedArticles'));
     }
