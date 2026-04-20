@@ -137,34 +137,45 @@ class AdminController extends Controller
         return response()->json(['error' => ['message' => 'Lỗi tải ảnh lên.']], 400);
     }
 
-    public function getMedia()
+    public function getMedia(Request $request)
     {
-        // Get files from public storage disk (thumbnails and uploads folders)
-        $disk = \Illuminate\Support\Facades\Storage::disk('public');
-        $thumbnails = $disk->files('thumbnails');
-        $uploads = $disk->files('uploads');
+        $page = $request->input('page', 1);
+        $perPage = 40;
+
+        $thumbnailsPath = storage_path('app/public/thumbnails');
+        $uploadsPath = storage_path('app/public/uploads');
+
+        $thumbnails = \Illuminate\Support\Facades\File::isDirectory($thumbnailsPath) 
+            ? \Illuminate\Support\Facades\File::files($thumbnailsPath) : [];
+            
+        $uploads = \Illuminate\Support\Facades\File::isDirectory($uploadsPath) 
+            ? \Illuminate\Support\Facades\File::files($uploadsPath) : [];
         
         $allFiles = array_merge($thumbnails, $uploads);
         
-        // Map to full URLs
-        $urls = array_map(function($path) {
-            return '/storage/' . $path;
-        }, $allFiles);
-
         // Sort by newest first (descending modification time)
-        usort($urls, function($a, $b) {
-            $pathA = str_replace('/storage/', '', $a);
-            $pathB = str_replace('/storage/', '', $b);
-            $disk = \Illuminate\Support\Facades\Storage::disk('public');
-            
-            // Handle missing files gracefully
-            if (!$disk->exists($pathA)) return 1;
-            if (!$disk->exists($pathB)) return -1;
-            
-            return $disk->lastModified($pathB) <=> $disk->lastModified($pathA);
+        usort($allFiles, function($a, $b) {
+            return $b->getMTime() <=> $a->getMTime();
         });
 
-        return response()->json(['data' => array_values($urls)]);
+        $total = count($allFiles);
+        $totalPages = (int) ceil($total / $perPage);
+        $offset = ($page - 1) * $perPage;
+        
+        $pagedFiles = array_slice($allFiles, $offset, $perPage);
+        
+        $urls = [];
+        foreach ($pagedFiles as $file) {
+            $folder = basename(dirname($file->getPathname()));
+            $urls[] = '/storage/' . $folder . '/' . $file->getFilename();
+        }
+
+        return response()->json([
+            'data' => $urls,
+            'current_page' => (int) $page,
+            'last_page' => $totalPages,
+            'has_more' => $page < $totalPages
+        ]);
     }
 
     public function destroy($id)

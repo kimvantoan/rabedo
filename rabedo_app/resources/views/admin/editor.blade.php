@@ -339,31 +339,51 @@
 </div>
 
 <script>
+    let currentMediaPage = 1;
+    let isLoadingMedia = false;
+
     function openMediaLibrary() {
         document.getElementById('media-library-modal').classList.remove('hidden');
-        loadMediaLibrary();
+        currentMediaPage = 1;
+        const grid = document.getElementById('media-grid');
+        if (grid) grid.innerHTML = '';
+        loadMediaLibrary(currentMediaPage);
     }
 
     function closeMediaLibrary() {
         document.getElementById('media-library-modal').classList.add('hidden');
     }
 
-    function loadMediaLibrary() {
+    function loadMediaLibrary(page = 1) {
+        if (isLoadingMedia) return;
+        isLoadingMedia = true;
+
         const grid = document.getElementById('media-grid');
         const loading = document.getElementById('media-loading');
         const empty = document.getElementById('media-empty');
+        let loadMoreBtn = document.getElementById('media-load-more');
         
-        loading.classList.remove('hidden');
-        grid.classList.add('hidden');
-        empty.classList.add('hidden');
-        grid.innerHTML = '';
+        if (page === 1) {
+            loading.classList.remove('hidden');
+            grid.classList.add('hidden');
+            empty.classList.add('hidden');
+            if(loadMoreBtn) loadMoreBtn.classList.add('hidden');
+            grid.innerHTML = '';
+        } else {
+            if(loadMoreBtn) {
+                loadMoreBtn.innerText = 'Đang tải...';
+                loadMoreBtn.disabled = true;
+            }
+        }
         
-        fetch('{{ route("admin.media") }}')
+        fetch(`{{ route("admin.media") }}?page=${page}`)
             .then(res => res.json())
             .then(result => {
-                loading.classList.add('hidden');
+                isLoadingMedia = false;
+                if (page === 1) loading.classList.add('hidden');
+                
                 const images = result.data || [];
-                if (images.length === 0) {
+                if (page === 1 && images.length === 0) {
                     empty.classList.remove('hidden');
                     return;
                 }
@@ -376,6 +396,7 @@
                     
                     const img = document.createElement('img');
                     img.src = url;
+                    img.loading = 'lazy';
                     img.className = 'block object-cover w-full h-full transform group-hover:scale-110 transition duration-300 ease-out';
                     
                     const overlay = document.createElement('div');
@@ -385,12 +406,43 @@
                     div.appendChild(overlay);
                     grid.appendChild(div);
                 });
+
+                if (result.has_more) {
+                    if (!loadMoreBtn) {
+                        const btnDiv = document.createElement('div');
+                        btnDiv.className = 'col-span-full flex justify-center py-4 w-full';
+                        btnDiv.innerHTML = `<button id="media-load-more" type="button" class="px-6 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium transition-colors border border-indigo-200" onclick="loadMoreMedia()">Tải thêm hình ảnh</button>`;
+                        grid.appendChild(btnDiv);
+                        loadMoreBtn = document.getElementById('media-load-more');
+                    } else {
+                        loadMoreBtn.innerText = 'Tải thêm hình ảnh';
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.classList.remove('hidden');
+                        grid.appendChild(loadMoreBtn.parentElement); // Move to the bottom
+                    }
+                } else if (loadMoreBtn && loadMoreBtn.parentElement) {
+                    loadMoreBtn.parentElement.classList.add('hidden');
+                }
             })
             .catch(err => {
-                loading.classList.add('hidden');
-                empty.classList.remove('hidden');
-                empty.innerHTML = '<p class="text-red-500 px-4 py-2">Xảy ra lỗi mạng khi kết nối máy chủ Media. Hãy thử lại.</p>';
+                isLoadingMedia = false;
+                if (page === 1) {
+                    loading.classList.add('hidden');
+                    empty.classList.remove('hidden');
+                    empty.innerHTML = '<p class="text-red-500 px-4 py-2">Xảy ra lỗi mạng khi kết nối máy chủ Media. Hãy thử lại.</p>';
+                } else {
+                    if(loadMoreBtn) {
+                        loadMoreBtn.innerText = 'Tải lại';
+                        loadMoreBtn.disabled = false;
+                    }
+                    alert('Lỗi tải thêm ảnh. Vui lòng thử lại.');
+                }
             });
+    }
+
+    function loadMoreMedia() {
+        currentMediaPage++;
+        loadMediaLibrary(currentMediaPage);
     }
 
     function selectMedia(url) {

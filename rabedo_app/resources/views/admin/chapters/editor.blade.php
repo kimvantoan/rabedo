@@ -160,16 +160,39 @@
     });
 
     // Mượn API thư viện media sẵn có của AdminController
+    let currentMediaPage = 1;
+    let isLoadingMedia = false;
+
     function openMediaLibrary() {
         var modal = document.getElementById('media-library-modal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        currentMediaPage = 1;
+        const grid = document.getElementById('media-grid');
+        if (grid) grid.innerHTML = '<div id="media-loading" class="col-span-full text-center text-gray-500 py-8">Đang tải...</div>';
+        loadMediaLibrary(currentMediaPage);
+    }
 
-        fetch("{{ route('admin.media') }}")
+    function loadMediaLibrary(page = 1) {
+        if (isLoadingMedia) return;
+        isLoadingMedia = true;
+        let loadMoreBtn = document.getElementById('media-load-more');
+        
+        if (page > 1 && loadMoreBtn) {
+            loadMoreBtn.innerText = 'Đang tải...';
+            loadMoreBtn.disabled = true;
+        }
+
+        fetch(`{{ route('admin.media') }}?page=${page}`)
             .then(res => res.json())
             .then(data => {
+                isLoadingMedia = false;
                 const grid = document.getElementById('media-grid');
-                grid.innerHTML = '';
+                const loading = document.getElementById('media-loading');
+                if (loading) loading.remove();
+                
+                if (page === 1) grid.innerHTML = '';
+
                 if(data.data && data.data.length > 0) {
                     data.data.forEach(url => {
                         const div = document.createElement('div');
@@ -178,6 +201,7 @@
                         
                         const img = document.createElement('img');
                         img.src = url;
+                        img.loading = 'lazy';
                         img.className = 'w-full h-full object-cover';
                         div.appendChild(img);
 
@@ -188,13 +212,34 @@
 
                         grid.appendChild(div);
                     });
-                } else {
+
+                    if (data.has_more) {
+                        if (!loadMoreBtn) {
+                            const btnDiv = document.createElement('div');
+                            btnDiv.className = 'col-span-full flex justify-center py-4 w-full';
+                            btnDiv.innerHTML = `<button id="media-load-more" type="button" class="px-6 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium transition-colors border border-indigo-200" onclick="loadMoreMedia()">Tải thêm hình ảnh</button>`;
+                            grid.appendChild(btnDiv);
+                        } else {
+                            loadMoreBtn.innerText = 'Tải thêm hình ảnh';
+                            loadMoreBtn.disabled = false;
+                            grid.appendChild(loadMoreBtn.parentElement);
+                        }
+                    } else if (loadMoreBtn && loadMoreBtn.parentElement) {
+                        loadMoreBtn.parentElement.remove();
+                    }
+                } else if (page === 1) {
                     grid.innerHTML = '<div class="col-span-full py-10 text-center text-gray-500">Chưa có bức ảnh nào trong hệ thống. Hãy upload ảnh ở bài viết khác trước.</div>';
                 }
             })
             .catch(err => {
+                isLoadingMedia = false;
                 document.getElementById('media-grid').innerHTML = '<div class="col-span-full text-center text-red-500">Lỗi tải dữ liệu thư viện.</div>';
             });
+    }
+
+    function loadMoreMedia() {
+        currentMediaPage++;
+        loadMediaLibrary(currentMediaPage);
     }
 
     function closeMediaLibrary() {
