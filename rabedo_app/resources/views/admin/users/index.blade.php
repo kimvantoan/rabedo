@@ -4,6 +4,12 @@
 <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between mb-4">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Admin Dashboard</h1>
+        <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
+                Đăng xuất
+            </button>
+        </form>
     </div>
 
     <!-- Navigation Tabs -->

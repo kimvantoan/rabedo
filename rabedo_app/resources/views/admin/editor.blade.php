@@ -36,7 +36,13 @@
                 Xem bài viết
             </a>
             @endif
-            <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Quay lại Dashboard</a>
+            <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900 border-r border-gray-300 pr-4">Quay lại Dashboard</a>
+            <form action="{{ route('logout') }}" method="POST" class="inline pl-4">
+                @csrf
+                <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                    Đăng xuất
+                </button>
+            </form>
         </div>
     </div>
 

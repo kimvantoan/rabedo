@@ -11,6 +11,12 @@
             <a href="{{ route('admin.editor') }}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 transition">
                 + Viết bài mới
             </a>
+            <form action="{{ route('logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
+                    Đăng xuất
+                </button>
+            </form>
         </div>
     </div>
 
