@@ -59,6 +59,19 @@
                     @endif
 
                     {{-- Pagination Elements --}}
+                    @php
+                        $keys = array_keys($elements);
+                        $lastKey = end($keys);
+                        
+                        if (
+                            count($elements) >= 3 &&
+                            is_array($elements[$lastKey]) &&
+                            $elements[$keys[count($keys) - 2]] === '...' &&
+                            !array_key_exists($paginator->currentPage(), $elements[$lastKey])
+                        ) {
+                            unset($elements[$lastKey]);
+                        }
+                    @endphp
                     @foreach ($elements as $element)
                         {{-- "Three Dots" Separator --}}
                         @if (is_string($element))

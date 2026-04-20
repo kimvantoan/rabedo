@@ -14,7 +14,7 @@ class AdminUserController extends Controller
     {
         $users = User::withCount('articles')
             ->orderBy('id', 'desc')
-            ->paginate(15);
+            ->paginate(15)->onEachSide(1);
         return view('admin.users.index', compact('users'));
     }
 
@@ -27,12 +27,14 @@ class AdminUserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:50', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
+            'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
@@ -45,7 +47,7 @@ class AdminUserController extends Controller
         $user = User::withCount('articles')->findOrFail($id);
         $articles = Article::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15)->onEachSide(1);
             
         return view('admin.users.show', compact('user', 'articles'));
     }
@@ -62,6 +64,10 @@ class AdminUserController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required', 'string', 'max:50',
+                Rule::unique(User::class)->ignore($user->id),
+            ],
             'email' => [
                 'required', 'string', 'lowercase', 'email', 'max:255',
                 Rule::unique(User::class)->ignore($user->id),
@@ -70,6 +76,7 @@ class AdminUserController extends Controller
         ]);
 
         $user->name = $validated['name'];
+        $user->username = $validated['username'];
         $user->email = $validated['email'];
         
         if (!empty($validated['password'])) {
@@ -85,13 +92,10 @@ class AdminUserController extends Controller
     {
         $user = User::findOrFail($id);
         
-        if ($user->id === auth()->id()) {
+        if ($user->id === \Illuminate\Support\Facades\Auth::id()) {
             return redirect()->route('users.index')->with('error', 'Bạn không thể xóa tài khoản đang đăng nhập!');
         }
 
-        // Set user_id to null for their articles before deleting to preserve articles
-        Article::where('user_id', $user->id)->update(['user_id' => null]);
-        
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Đã xóa tài khoản thành công!');

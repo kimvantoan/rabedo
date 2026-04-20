@@ -50,6 +50,7 @@
                 <tr>
                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">ID</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tên</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Username</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Ngày tạo</th>
                     <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Số bài đăng</th>
@@ -63,6 +64,7 @@
                 <tr>
                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $user->id }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">{{ $user->name }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->username }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->email }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y') }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
@@ -84,7 +86,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="py-4 text-center text-gray-500">Chưa có hệ thống tài khoản nào</td>
+                    <td colspan="7" class="py-4 text-center text-gray-500">Chưa có hệ thống tài khoản nào</td>
                 </tr>
                 @endforelse
             </tbody>

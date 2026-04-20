@@ -19,7 +19,7 @@ class HomeController extends Controller
             });
         }
 
-        $articles = $query->orderBy('created_at', 'desc')->paginate(12);
+        $articles = $query->orderBy('created_at', 'desc')->paginate(12)->onEachSide(1);
                            
         return view('home', compact('articles', 'searchTerm'));
     }

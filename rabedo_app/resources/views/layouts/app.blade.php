@@ -7,7 +7,7 @@
     @yield('seo_meta')
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('logo_sharp.png') }}" type="image/png">
-    @if(!request()->is('admin*'))
+    @if(!request()->is('admin*') && !request()->is('login'))
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4370452252708446"
      crossorigin="anonymous"></script>
      
@@ -52,15 +52,7 @@
             <a href="{{ route('home') }}" class="flex items-center">
                 <img src="{{ asset('logo_sharp.png') }}" alt="Rabedo Logo" class="h-10 w-auto">
             </a>
-            @auth
-            <div class="absolute right-4 sm:right-6 lg:right-8 flex items-center space-x-4">
-                <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-700 hover:text-black">Đến Dashboard</a>
-                <form method="POST" action="{{ route('logout') }}" class="inline">
-                    @csrf
-                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">Đăng xuất</button>
-                </form>
-            </div>
-            @endauth
+
         </div>
     </header>
 

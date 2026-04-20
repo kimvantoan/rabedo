@@ -14,7 +14,7 @@ class AdminController extends Controller
     {
         $articles = Article::where('type', 'Admin')
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15)->onEachSide(1);
         return view('admin.dashboard', compact('articles'));
     }
 
@@ -48,7 +48,7 @@ class AdminController extends Controller
             'Poppy Lancaster', 'Ava Pemberton', 'Isabella Carlisle', 'Jessica Whitmore'
         ];
         $article->author = $fakeAuthors[array_rand($fakeAuthors)];
-        $article->user_id = auth()->id();
+        $article->user_id = \Illuminate\Support\Facades\Auth::id();
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');

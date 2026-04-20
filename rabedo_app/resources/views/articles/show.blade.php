@@ -99,7 +99,7 @@
                 </div>
                 <div class="mb-3">
                     <h3 class="text-[1.25rem] font-bold font-sans leading-tight text-[#0a1e3f] group-hover:text-[#9d080a] transition-colors line-clamp-2">
-                        <a href="{{ route('articles.show', $relArticle->id) }}">
+                        <a href="{{ route('articles.show', [$relArticle->id, 'utm_source' => $relArticle->user?->username]) }}">
                             <span class="absolute inset-0"></span>
                             {{ $relArticle->title }}
                         </a>
