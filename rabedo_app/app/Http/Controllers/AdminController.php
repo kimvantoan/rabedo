@@ -10,11 +10,25 @@ class AdminController extends Controller
     // Apply basic auth middleware if needed
     // public function __construct() { $this->middleware('auth'); }
 
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::where('type', 'Admin')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15)->onEachSide(1);
+        $query = Article::where('type', 'Admin');
+
+        if ($search = $request->input('search')) {
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        $sortColumn = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('dir', 'desc');
+        
+        if (in_array($sortColumn, ['created_at', 'views', 'title'])) {
+            $query->orderBy($sortColumn, $sortDirection === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $articles = $query->paginate(15)->appends($request->all())->onEachSide(1);
+
         return view('admin.dashboard', compact('articles'));
     }
 

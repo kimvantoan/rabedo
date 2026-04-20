@@ -48,6 +48,21 @@
         </div>
     @endif
 
+    <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <form action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center">
+            <div class="relative flex-grow max-w-md">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm tiêu đề bài viết..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Tìm kiếm</button>
+            @if(request('search'))
+                <a href="{{ route('admin.dashboard') }}" class="ml-3 inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50">Xoá lọc</a>
+            @endif
+        </form>
+    </div>
+
     <div class="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg w-full">
         <table class="min-w-full divide-y divide-gray-300 bg-white">
             <thead class="bg-gray-50">
@@ -56,7 +71,25 @@
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tiêu đề</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Biên tập viên</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden sm:table-cell">Ngày tạo</th>
-                    <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Lượt xem</th>
+                    <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">
+                        @php
+                            $viewSortDir = request('sort') === 'views' && request('dir') === 'desc' ? 'asc' : 'desc';
+                        @endphp
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'views', 'dir' => $viewSortDir]) }}" class="group inline-flex items-center hover:text-indigo-600">
+                            Lượt xem
+                            <span class="ml-1 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
+                                @if(request('sort') === 'views')
+                                    @if(request('dir') === 'asc')
+                                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                                    @else
+                                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                    @endif
+                                @else
+                                    <svg class="h-4 w-4 text-gray-400 invisible group-hover:visible" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                @endif
+                            </span>
+                        </a>
+                    </th>
                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 whitespace-nowrap">
                         <span class="sr-only">Hành động</span>
                     </th>

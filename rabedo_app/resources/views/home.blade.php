@@ -101,8 +101,8 @@
             </article>
             @endforeach
         </div>
-        <div class="mt-8 pagination-theme">
-            {{ $articles->links() }}
+        <div class="mt-8 pagination-theme flex justify-center w-full">
+            {{ $articles->links('vendor.pagination.home') }}
         </div>
 
         <style>

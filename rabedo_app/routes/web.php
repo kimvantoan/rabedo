@@ -19,8 +19,8 @@ Route::get('/privacy-policy', [App\Http\Controllers\PageController::class, 'priv
 Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('page.contact');
 Route::get('/disclaimer', [App\Http\Controllers\PageController::class, 'disclaimer'])->name('page.disclaimer');
 
-// Admin Routes (protected by auth middleware)
-Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+// Admin Routes (protected by auth middleware and no-cache)
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'cache.headers:nocache,no_store,max_age=0,must_revalidate']], function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/editor', [AdminController::class, 'editor'])->name('admin.editor');
     // Save routes

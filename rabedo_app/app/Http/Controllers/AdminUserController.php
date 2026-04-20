@@ -42,12 +42,26 @@ class AdminUserController extends Controller
         return redirect()->route('users.index')->with('success', 'Tạo tài khoản thành công!');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $user = User::withCount('articles')->findOrFail($id);
-        $articles = Article::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15)->onEachSide(1);
+        
+        $query = Article::where('user_id', $user->id);
+
+        if ($search = $request->input('search')) {
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        $sortColumn = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('dir', 'desc');
+        
+        if (in_array($sortColumn, ['created_at', 'views', 'title'])) {
+            $query->orderBy($sortColumn, $sortDirection === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $articles = $query->paginate(15)->appends($request->all())->onEachSide(1);
             
         return view('admin.users.show', compact('user', 'articles'));
     }
