@@ -28,7 +28,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'existing_thumbnail' => 'nullable|string',
         ]);
@@ -38,7 +38,7 @@ class AdminController extends Controller
         $article->description = $validated['description'] ?? null;
         // Generate a random slug fallback, or create proper slug function
         $article->slug = \Illuminate\Support\Str::slug($validated['title']) . '-' . time();
-        $article->content = $validated['content'];
+        $article->content = $validated['content'] ?? '';
         $article->type = 'Admin';
         $fakeAuthors = [
             'Arthur Pendelton', 'George Harrington', 'James Kensington', 'William Ashford',
@@ -83,14 +83,14 @@ class AdminController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'existing_thumbnail' => 'nullable|string',
         ]);
 
         $article->title = $validated['title'];
         $article->description = $validated['description'] ?? null;
-        $article->content = $validated['content'];
+        $article->content = $validated['content'] ?? '';
         $article->type = 'Admin';
 
         if ($request->hasFile('thumbnail')) {

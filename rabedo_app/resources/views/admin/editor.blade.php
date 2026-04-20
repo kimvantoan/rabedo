@@ -6,7 +6,30 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ isset($article) ? 'Chỉnh sửa bài viết' : 'Viết bài mới' }}</h1>
         <div class="flex items-center space-x-4">
             @if(isset($article))
-            <a href="{{ route('articles.show', [$article->id, 'utm_source' => $article->user?->username]) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
+            <button type="button" onclick="copyShareUrl()" class="inline-flex items-center justify-center rounded-md border border-[#9d080a] bg-[#9d080a] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#7a0608] transition" id="share-btn">
+                <svg class="mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <span id="share-text">Copy Link Share</span>
+            </button>
+            <script>
+                function copyShareUrl() {
+                    const shareUrl = '{{ route("articles.show", ["idOrSlug" => $article->id]) }}?utm_source=facebook&utm_medium=social&utm_content={{ $article->user?->username ?? "admin" }}';
+                    const textArea = document.createElement("textarea");
+                    textArea.value = shareUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        const shareText = document.getElementById('share-text');
+                        const originalText = shareText.innerText;
+                        shareText.innerText = 'Đã Copy!';
+                        setTimeout(() => shareText.innerText = originalText, 2000);
+                    } catch (err) {}
+                    document.body.removeChild(textArea);
+                }
+            </script>
+            <a href="{{ route('articles.show', [$article->id]) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
                 <svg class="mr-2 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -95,19 +118,76 @@
                 <input type="hidden" name="content" id="content-input" value="{{ old('content', $article->content ?? '') }}">
                 <div id="quill-editor" class="bg-white rounded-b-md border-gray-300 shadow-sm">{!! old('content', $article->content ?? '') !!}</div>
             </div>
-            <p class="mt-2 text-sm text-gray-500">Hỗ trợ soạn thảo phong phú qua Quill JS.</p>
+            <p class="mt-2 text-[13px] text-gray-500">Hỗ trợ soạn thảo phong phú qua Quill JS. <span class="italic text-orange-600 font-medium">(Lưu ý: Không bắt buộc nhập nếu làm Truyện nhiều chương. Bạn cứ Lưu bài rồi cuộn để viết Chương ở bảng bên dưới).</span></p>
         </div>
 
         <div class="pt-5 border-t">
             <div class="flex justify-end">
                 <button type="button" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Hủy</button>
-                <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ isset($article) ? 'Cập nhật bài viết' : 'Lưu bài viết' }}</button>
+                <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-6 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ isset($article) ? 'Lưu Truyện/Bài viết' : 'Lưu Truyện/Bài viết' }}</button>
             </div>
         </div>
     </form>
 </div>
 </div>
+</div>
 
+@if(isset($article))
+<div class="mx-auto max-w-5xl px-4 pb-8 sm:px-6 lg:px-8 mt-4" id="chapters-section">
+    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-indigo-600">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 uppercase">CÁC CHƯƠNG/TẬP CỦA BÀI VIẾT NÀY</h2>
+                <p class="text-sm text-gray-500 mt-1">Dành riêng cho việc đăng truyện nhiều kỳ.</p>
+            </div>
+            <a href="{{ route('admin.chapters.create', $article->id) }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition border border-transparent shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Tạo Chương Mới
+            </a>
+        </div>
+
+        @if($article->chapters && $article->chapters->count() > 0)
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">Chương</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tên chương</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ngày đăng</th>
+                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($article->chapters as $chapter)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">#{{ $chapter->chapter_number }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 font-medium clamp-1">{{ $chapter->title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $chapter->created_at->format('d/m/Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{{ route('admin.chapters.edit', $chapter->id) }}" class="text-indigo-600 hover:text-indigo-900 font-semibold px-2 py-1 rounded bg-indigo-50 hover:bg-indigo-100 transition inline-block mr-2">Sửa</a>
+                            <form action="{{ route('admin.chapters.destroy', $chapter->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xoá chương này?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900 font-semibold px-2 py-1 rounded bg-red-50 hover:bg-red-100 transition">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="text-center py-10 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Bài viết độc lập</h3>
+            <p class="mt-1 text-sm text-gray-500">Bài này hiện chưa có chương nào. Ấn "Tạo Chương Mới" nếu bạn muốn biến nó thành Truyện nhiều tập.</p>
+        </div>
+        @endif
+    </div>
+</div>
+@endif
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
     .ql-editor {

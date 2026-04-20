@@ -59,8 +59,258 @@
             [&_img]:rounded-none [&_img]:w-full [&_img]:my-10 [&_img]:shadow-md
             [&_figcaption]:text-center [&_figcaption]:text-[13px] [&_figcaption]:text-gray-500 [&_figcaption]:mt-3
             [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-[18px] [&_li]:md:text-[20px] [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-left">
-            {!! $article->content !!}
+            @if(isset($currentChapter))
+                <!-- Lấy Previous và Next -->
+                @php
+                    $prevChapter = $article->chapters->where('chapter_number', '<', $currentChapter->chapter_number)->last();
+                    $nextChapter = $article->chapters->where('chapter_number', '>', $currentChapter->chapter_number)->first();
+                @endphp
+
+                <!-- Header Block -->
+                <div class="text-center mb-10 not-prose">
+                    <h2 class="text-[22px] md:text-[30px] font-extrabold mb-6 text-gray-800 tracking-tight">Chapter {{ $currentChapter->chapter_number }}: {{ $currentChapter->title }}</h2>
+
+                    <!-- Navigation Top -->
+                    <div class="flex flex-row justify-center items-center gap-2 sm:gap-4">
+                        @if($prevChapter)
+                            <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
+                                <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                Previous Chapter
+                            </a>
+                        @else
+                            <div class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] opacity-40 text-white text-[13px] sm:text-[15px] font-semibold cursor-not-allowed">
+                                <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                Previous Chapter
+                            </div>
+                        @endif
+
+                        @if($nextChapter)
+                            <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $nextChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
+                                Next Chapter
+                                <svg class="w-4 h-4 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        @else
+                            <div class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] opacity-40 text-white text-[13px] sm:text-[15px] font-semibold cursor-not-allowed">
+                                Next Chapter
+                                <svg class="w-4 h-4 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Action Buttons Top -->
+                    <div class="mt-5 flex justify-center items-center gap-6">
+                        <button onclick="toggleChapterDrawer()" class="flex items-center text-sm font-medium text-gray-500 hover:text-[#9d080a] transition-colors">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            List of Chapters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bài viết -->
+                {!! $currentChapter->content !!}
+
+                <!-- Navigation Bottom -->
+                <div class="mt-12 sm:mt-16 pt-8 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
+                    @if($prevChapter)
+                        <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
+                            <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            Previous Chapter
+                        </a>
+                    @else
+                        <div class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] opacity-40 text-white text-[13px] sm:text-[15px] font-semibold cursor-not-allowed">
+                            <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            Previous Chapter
+                        </div>
+                    @endif
+
+                    @if($nextChapter)
+                        <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $nextChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
+                            Next Chapter
+                            <svg class="w-4 h-4 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    @else
+                        <div class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] opacity-40 text-white text-[13px] sm:text-[15px] font-semibold cursor-not-allowed">
+                            Next Chapter
+                            <svg class="w-4 h-4 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    @endif
+                </div>
+                
+                <!-- Action Buttons Bottom -->
+                @if(isset($currentChapter))
+                <div class="mt-6 flex justify-center gap-4 not-prose">
+                    <button onclick="toggleChapterDrawer()" class="flex items-center text-[13px] font-medium text-gray-500 hover:text-[#9d080a] transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        List of Chapters
+                    </button>
+                </div>
+                @endif
+            @else
+                {!! $article->content !!}
+            @endif
         </div>
+
+        <!-- Javascript Data for Chapters Drawer -->
+        @if(isset($article->chapters) && $article->chapters->count() > 0)
+        <!-- Drawer Overlay -->
+        <div id="chapter-drawer-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity opacity-0" onclick="toggleChapterDrawer()"></div>
+        
+        <!-- Drawer Panel -->
+        <div id="chapter-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900">Chapters</h3>
+                <button onclick="toggleChapterDrawer()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Search -->
+            <div class="p-4 border-b border-gray-100 bg-gray-50">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="drawer-search" placeholder="Search chapter number or title..." class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#9d080a] focus:border-[#9d080a] sm:text-sm transition-colors">
+                </div>
+            </div>
+            
+            <!-- List -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-2" id="drawer-list">
+                <!-- JS will render chapters here -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="p-4 border-t border-gray-200 bg-white" id="drawer-pagination">
+                <!-- JS will render pagination here -->
+            </div>
+        </div>
+
+        @php
+            $chaptersJsonData = $article->chapters->map(function($ch) use ($article) {
+                return [
+                    'number' => $ch->chapter_number,
+                    'title' => $ch->title,
+                    'url' => route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $ch->chapter_number])
+                ];
+            });
+        @endphp
+        <script id="chapters-data" type="application/json" data-current-chapter="{{ isset($currentChapter) ? $currentChapter->chapter_number : 'null' }}">
+            {!! json_encode($chaptersJsonData) !!}
+        </script>
+        <script>
+            window.chaptersData = JSON.parse(document.getElementById('chapters-data').textContent);
+            
+            let filteredChapters = [...window.chaptersData];
+            let currentPage = 1;
+            const itemsPerPage = 10;
+            const currentChapterNumberStr = document.getElementById('chapters-data').getAttribute('data-current-chapter');
+            const currentChapterNumber = currentChapterNumberStr === 'null' ? null : parseInt(currentChapterNumberStr);
+            
+            function toggleChapterDrawer() {
+                const drawer = document.getElementById('chapter-drawer');
+                const overlay = document.getElementById('chapter-drawer-overlay');
+                const body = document.body;
+                
+                if (drawer.classList.contains('translate-x-full')) {
+                    drawer.classList.remove('translate-x-full');
+                    overlay.classList.remove('hidden');
+                    // Tiny delay to trigger opacity transition
+                    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                    body.style.overflow = 'hidden'; // Prevent scrolling under drawer
+                    
+                    // Render current state
+                    renderDrawer();
+                } else {
+                    drawer.classList.add('translate-x-full');
+                    overlay.classList.add('opacity-0');
+                    setTimeout(() => overlay.classList.add('hidden'), 300);
+                    body.style.overflow = '';
+                }
+            }
+            
+            function renderDrawer() {
+                const listEl = document.getElementById('drawer-list');
+                const pagEl = document.getElementById('drawer-pagination');
+                listEl.innerHTML = '';
+                pagEl.innerHTML = '';
+                
+                if (filteredChapters.length === 0) {
+                    listEl.innerHTML = '<div class="text-center py-8 text-gray-500 text-sm">No chapters found</div>';
+                    return;
+                }
+                
+                const totalPages = Math.ceil(filteredChapters.length / itemsPerPage);
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+                
+                const startIdx = (currentPage - 1) * itemsPerPage;
+                const pageItems = filteredChapters.slice(startIdx, startIdx + itemsPerPage);
+                
+                // Render List
+                pageItems.forEach(ch => {
+                    const isActive = ch.number == currentChapterNumber;
+                    const bkgClass = isActive ? 'bg-[#fff5f5] border-[#fbbdbd]' : 'bg-gray-50 border-transparent hover:bg-gray-100';
+                    const numClass = isActive ? 'text-[#9d080a] font-bold' : 'text-gray-500 font-medium';
+                    const textClass = isActive ? 'text-[#9d080a] font-bold' : 'text-gray-700';
+
+                    listEl.innerHTML += `
+                        <a href="${ch.url}" class="flex items-center p-3 rounded border transition-colors ${bkgClass}">
+                            <div class="w-12 text-xs mr-3 flex-shrink-0 ${numClass}">
+                                Ch. ${ch.number}
+                            </div>
+                            <div class="flex-1 text-sm truncate ${textClass}">
+                                ${ch.title}
+                            </div>
+                        </a>
+                    `;
+                });
+                
+                // Render Pagination
+                if (totalPages > 1) {
+                    let pagHtml = `<div class="flex items-center justify-center space-x-1">`;
+                    
+                    pagHtml += `<button onclick="goToPage(1)" class="px-2.5 py-1 text-xs border rounded text-gray-500 hover:bg-gray-50" ${currentPage === 1 ? 'disabled class="opacity-50"' : ''}>First</button>`;
+                    pagHtml += `<button onclick="goToPage(${currentPage - 1})" class="px-2.5 py-1 text-xs border rounded text-gray-500 hover:bg-gray-50" ${currentPage === 1 ? 'disabled class="opacity-50"' : ''}>&lt;</button>`;
+                    
+                    // Show small window of pages around current
+                    let startPage = Math.max(1, currentPage - 2);
+                    let endPage = Math.min(totalPages, currentPage + 2);
+                    
+                    for (let p = startPage; p <= endPage; p++) {
+                        const activeCls = p === currentPage ? 'bg-[#9d080a] text-white border-[#9d080a] font-bold' : 'text-gray-600 border hover:bg-gray-50';
+                        pagHtml += `<button onclick="goToPage(${p})" class="px-3 py-1 text-xs rounded ${activeCls}">${p}</button>`;
+                    }
+                    
+                    pagHtml += `<button onclick="goToPage(${currentPage + 1})" class="px-2.5 py-1 text-xs border rounded text-gray-500 hover:bg-gray-50" ${currentPage === totalPages ? 'disabled class="opacity-50"' : ''}>&gt;</button>`;
+                    pagHtml += `<button onclick="goToPage(${totalPages})" class="px-2.5 py-1 text-xs border rounded text-gray-500 hover:bg-gray-50" ${currentPage === totalPages ? 'disabled class="opacity-50"' : ''}>Last (${totalPages})</button>`;
+                    
+                    pagHtml += `</div>`;
+                    pagEl.innerHTML = pagHtml;
+                }
+            }
+            
+            function goToPage(p) {
+                currentPage = p;
+                renderDrawer();
+            }
+            
+            // Search Event
+            document.getElementById('drawer-search').addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase().trim();
+                if (!query) {
+                    filteredChapters = [...window.chaptersData];
+                } else {
+                    filteredChapters = window.chaptersData.filter(ch => {
+                        return ch.title.toLowerCase().includes(query) || ch.number.toString().includes(query);
+                    });
+                }
+                currentPage = 1; // reset to first page on search
+                renderDrawer();
+            });
+        </script>
+        @endif
+
 
         <div class="mt-4 md:mt-6 w-full text-center">
             <ins class="adsbygoogle"

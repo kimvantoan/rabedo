@@ -30,4 +30,8 @@ class Article extends Model
     {
         return $this->belongsTo(User::class)->withTrashed();
     }
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class)->orderBy('chapter_number', 'asc');
+    }
 }

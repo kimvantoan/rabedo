@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/articles/{idOrSlug}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/articles/{idOrSlug}/chapter-{chapterNumber}', [ArticleController::class, 'showChapter'])->name('articles.chapter');
 
 Route::get('/proxy/image', [App\Http\Controllers\AiController::class, 'imageProxy'])->name('proxy.image');
 
@@ -30,6 +31,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/media', [AdminController::class, 'getMedia'])->name('admin.media');
     Route::post('/upload-image', [AdminController::class, 'uploadImage'])->name('admin.upload_image');
     
+    // Chapter Management Routes
+    Route::get('/articles/{articleId}/chapters/create', [App\Http\Controllers\AdminChapterController::class, 'create'])->name('admin.chapters.create');
+    Route::post('/articles/{articleId}/chapters', [App\Http\Controllers\AdminChapterController::class, 'store'])->name('admin.chapters.store');
+    Route::get('/chapters/{id}/edit', [App\Http\Controllers\AdminChapterController::class, 'edit'])->name('admin.chapters.edit');
+    Route::put('/chapters/{id}', [App\Http\Controllers\AdminChapterController::class, 'update'])->name('admin.chapters.update');
+    Route::delete('/chapters/{id}', [App\Http\Controllers\AdminChapterController::class, 'destroy'])->name('admin.chapters.destroy');
     // AI Route
     Route::get('/generate-ai', [App\Http\Controllers\AiController::class, 'generate'])->name('admin.generate_ai');
     
