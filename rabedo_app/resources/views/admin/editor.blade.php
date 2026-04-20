@@ -96,14 +96,14 @@
             
             <script>
                 function previewThumbnail(event) {
-                    const reader = new FileReader();
-                    reader.onload = function(){
-                        const output = document.getElementById('thumbnail-preview');
-                        output.src = reader.result;
-                        document.getElementById('thumbnail-preview-container').style.display = 'block';
-                        // Clear the existing hidden link to avoid ambiguity
-                        document.getElementById('existing_thumbnail').value = '';
-                    };
+                        const reader = new FileReader();
+                        reader.onload = function(){
+                            const output = document.getElementById('thumbnail-preview');
+                            output.src = reader.result;
+                            document.getElementById('thumbnail-preview-container').style.display = 'block';
+                            // Clear the existing hidden link to avoid ambiguity
+                            document.getElementById('existing_thumbnail').value = '';
+                        };
                     if(event.target.files[0]){
                         reader.readAsDataURL(event.target.files[0]);
                     }
@@ -118,7 +118,7 @@
                 <input type="hidden" name="content" id="content-input" value="{{ old('content', $article->content ?? '') }}">
                 <div id="quill-editor" class="bg-white rounded-b-md border-gray-300 shadow-sm">{!! old('content', $article->content ?? '') !!}</div>
             </div>
-            <p class="mt-2 text-[13px] text-gray-500">Hỗ trợ soạn thảo phong phú qua Quill JS. <span class="italic text-orange-600 font-medium">(Lưu ý: Không bắt buộc nhập nếu làm Truyện nhiều chương. Bạn cứ Lưu bài rồi cuộn để viết Chương ở bảng bên dưới).</span></p>
+            <span class="italic text-orange-600 font-medium">(Lưu ý: Không bắt buộc nhập nếu làm Truyện nhiều chương. Bạn cứ Lưu bài rồi cuộn để viết Chương ở bảng bên dưới).</span></p>
         </div>
 
         <div class="pt-5 border-t">
