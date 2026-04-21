@@ -113,9 +113,25 @@
                 </div>
 
                 <!-- Bài viết -->
-                {!! $currentChapter->content !!}
+                @php
+                    $chapterHtml = $currentChapter->content;
+                    $adHtml = '
+                    <div class="my-6 w-full text-center not-prose">
+                        <ins class="adsbygoogle"
+                            style="display:block"
+                            data-ad-client="ca-pub-4370452252708446"
+                            data-ad-slot="9674028583"
+                            data-ad-format="auto"
+                            data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>';
+                    $chapterHtmlWithAd = preg_replace('/<\/p>/i', '</p>' . $adHtml, $chapterHtml, 1);
+                @endphp
+                {!! $chapterHtmlWithAd !!}
 
-                <div class="mt-8 md:mt-10 w-full text-center not-prose mb-8">
+                <div class="mt-4 md:mt-5 w-full text-center not-prose mb-6">
                     <ins class="adsbygoogle"
                         style="display:block"
                         data-ad-client="ca-pub-4370452252708446"
@@ -128,7 +144,7 @@
                 </div>
 
                 <!-- Navigation Bottom -->
-                <div class="pt-8 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
+                <div class="pt-6 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
                     @if($prevChapter)
                         <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
                             <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -166,7 +182,7 @@
             @else
                 {!! $article->content !!}
                 
-                <div class="mt-8 md:mt-10 w-full text-center not-prose">
+                <div class="mt-4 md:mt-5 w-full text-center not-prose">
                     <ins class="adsbygoogle"
                         style="display:block"
                         data-ad-client="ca-pub-4370452252708446"
