@@ -55,17 +55,22 @@
     @endif
 
     <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <form action="{{ route('admin.dashboard') }}" method="GET" class="flex items-center">
-            <div class="relative flex-grow max-w-md">
+        <form action="{{ route('admin.dashboard') }}" method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+            <div class="relative flex-grow max-w-md w-full sm:w-auto">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm tiêu đề bài viết..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
-            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Tìm kiếm</button>
-            @if(request('search'))
-                <a href="{{ route('admin.dashboard') }}" class="ml-3 inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50">Xoá lọc</a>
-            @endif
+            <div class="relative flex-grow max-w-[200px] w-full sm:w-auto">
+                <input type="date" name="date" value="{{ request('date') }}" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">Tìm kiếm</button>
+                @if(request('search') || request('date'))
+                    <a href="{{ route('admin.dashboard') }}" class="inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 whitespace-nowrap w-full sm:w-auto text-center">Xoá lọc</a>
+                @endif
+            </div>
         </form>
     </div>
 

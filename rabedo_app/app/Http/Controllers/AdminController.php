@@ -13,9 +13,17 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $query = Article::where('type', 'Admin');
+        
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
 
         if ($search = $request->input('search')) {
             $query->where('title', 'like', "%{$search}%");
+        }
+
+        if ($date = $request->input('date')) {
+            $query->whereDate('created_at', $date);
         }
 
         $sortColumn = $request->input('sort', 'created_at');
@@ -81,18 +89,28 @@ class AdminController extends Controller
 
     public function edit($id)
     {
-        $article = Article::where('id', $id)
-            ->where('type', 'Admin')
-            ->firstOrFail();
+        $query = Article::where('id', $id)
+            ->where('type', 'Admin');
+            
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
+            
+        $article = $query->firstOrFail();
 
         return view('admin.editor', compact('article'));
     }
 
     public function update(Request $request, $id)
     {
-        $article = Article::where('id', $id)
-            ->where('type', 'Admin')
-            ->firstOrFail();
+        $query = Article::where('id', $id)
+            ->where('type', 'Admin');
+            
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
+            
+        $article = $query->firstOrFail();
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -180,9 +198,14 @@ class AdminController extends Controller
 
     public function destroy($id)
     {
-        $article = Article::where('id', $id)
-            ->where('type', 'Admin')
-            ->firstOrFail();
+        $query = Article::where('id', $id)
+            ->where('type', 'Admin');
+            
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
+            
+        $article = $query->firstOrFail();
 
         // Optionally, remove thumbnail from disk
         if ($article->thumbnail) {

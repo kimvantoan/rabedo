@@ -11,7 +11,11 @@ class AdminChapterController extends Controller
 {
     public function create($articleId)
     {
-        $article = Article::findOrFail($articleId);
+        $query = Article::where('id', $articleId);
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
+        $article = $query->firstOrFail();
         // Suggest the next chapter number
         $nextChapter = $article->chapters()->max('chapter_number') + 1;
         return view('admin.chapters.editor', compact('article', 'nextChapter'));
@@ -19,7 +23,11 @@ class AdminChapterController extends Controller
 
     public function store(Request $request, $articleId)
     {
-        $article = Article::findOrFail($articleId);
+        $query = Article::where('id', $articleId);
+        if (!auth()->user()->is_admin) {
+            $query->where('user_id', auth()->id());
+        }
+        $article = $query->firstOrFail();
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -41,13 +49,19 @@ class AdminChapterController extends Controller
     public function edit($id)
     {
         $chapter = Chapter::with('article')->findOrFail($id);
+        if (!auth()->user()->is_admin && $chapter->article->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $article = $chapter->article;
         return view('admin.chapters.editor', compact('chapter', 'article'));
     }
 
     public function update(Request $request, $id)
     {
-        $chapter = Chapter::findOrFail($id);
+        $chapter = Chapter::with('article')->findOrFail($id);
+        if (!auth()->user()->is_admin && $chapter->article->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -66,7 +80,10 @@ class AdminChapterController extends Controller
 
     public function destroy($id)
     {
-        $chapter = Chapter::findOrFail($id);
+        $chapter = Chapter::with('article')->findOrFail($id);
+        if (!auth()->user()->is_admin && $chapter->article->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $articleId = $chapter->article_id;
         $chapter->delete();
 

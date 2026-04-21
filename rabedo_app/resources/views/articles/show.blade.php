@@ -31,23 +31,29 @@
             </script>
         </div>
         
+        @if(!(isset($currentChapter) && $currentChapter->chapter_number >= 2))
         @if(!empty($article->description))
         <p class="text-xl md:text-[22px] text-gray-600 leading-relaxed font-sans font-medium mb-6">
             {{ $article->description }}
         </p>
         @endif
+        @endif
         
+        @if(!(isset($currentChapter) && $currentChapter->chapter_number >= 2))
         <div class="flex items-center justify-center gap-1.5 text-[14px] text-gray-400 font-sans flex-wrap mt-8 mb-10 md:mb-12">
             <span class="uppercase text-gray-400 text-[12px] font-medium">By</span>
             <span class="font-bold text-gray-900 uppercase mr-1 text-[13px] tracking-wide">{{ $article->author ?: 'Admin' }}</span>
             <span class="text-gray-300">—</span>
             <span class="ml-1">{{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}</span>
         </div>
+        @endif
 
+        @if(!(isset($currentChapter) && $currentChapter->chapter_number >= 2))
         @if(!empty($article->thumbnail))
         <div class="w-full mb-10 md:mb-12">
             <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="w-full h-auto object-cover rounded-xl shadow-sm md:max-h-[500px]" loading="eager">
         </div>
+        @endif
         @endif
         
         <div class="prose prose-lg md:prose-xl max-w-none w-full text-[#333]
@@ -109,8 +115,20 @@
                 <!-- Bài viết -->
                 {!! $currentChapter->content !!}
 
+                <div class="mt-8 md:mt-10 w-full text-center not-prose mb-8">
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-4370452252708446"
+                        data-ad-slot="9674028583"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+
                 <!-- Navigation Bottom -->
-                <div class="mt-12 sm:mt-16 pt-8 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
+                <div class="pt-8 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
                     @if($prevChapter)
                         <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="flex items-center justify-center w-[150px] sm:w-[180px] py-2.5 rounded-full bg-[#681313] hover:opacity-90 text-white text-[13px] sm:text-[15px] font-semibold transition-all">
                             <svg class="w-4 h-4 mr-1 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -147,6 +165,18 @@
                 @endif
             @else
                 {!! $article->content !!}
+                
+                <div class="mt-8 md:mt-10 w-full text-center not-prose">
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-4370452252708446"
+                        data-ad-slot="9674028583"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
             @endif
         </div>
 
@@ -310,19 +340,6 @@
             });
         </script>
         @endif
-
-
-        <div class="mt-4 md:mt-6 w-full text-center">
-            <ins class="adsbygoogle"
-                style="display:block"
-                data-ad-client="ca-pub-4370452252708446"
-                data-ad-slot="9674028583"
-                data-ad-format="auto"
-                data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
 </article>
 
 @if(isset($relatedArticles) && $relatedArticles->count() > 0)
