@@ -19,7 +19,7 @@
             </button>
             <script>
                 function copyShareUrl() {
-                    const shareUrl = '{{ route("articles.chapter", ["idOrSlug" => $article->id, "chapterNumber" => $chapter->chapter_number]) }}?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
+                    const shareUrl = '{{ route("articles.chapter", ["idOrSlug" => $article->id, "chapterNumber" => $chapter->chapter_number]) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
                     const textArea = document.createElement("textarea");
                     textArea.value = shareUrl;
                     document.body.appendChild(textArea);
@@ -40,26 +40,26 @@
     </div>
 
     @if ($errors->any())
-        <div class="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
-            <div class="flex">
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-red-800">Lỗi khi lưu chương:</h3>
-                    <div class="mt-2 text-sm text-red-700">
-                        <ul class="list-disc pl-5 space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+    <div class="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
+        <div class="flex">
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Lỗi khi lưu chương:</h3>
+                <div class="mt-2 text-sm text-red-700">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
     @endif
 
     <form action="{{ isset($chapter) ? route('admin.chapters.update', $chapter->id) : route('admin.chapters.store', $article->id) }}" method="POST" id="chapter-form" class="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
         @csrf
         @if(isset($chapter))
-            @method('PUT')
+        @method('PUT')
         @endif
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -77,7 +77,7 @@
             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Nội dung HTML</label>
             <!-- Cần 1 div id=editor-container để Quill móc vào -->
             <div id="editor-container" class="rounded-md border border-gray-300 bg-white" style="height: 500px;">{!! old('content', $chapter->content ?? '') !!}</div>
-            
+
             <!-- TextArea ẩn để submit form -->
             <textarea name="content" id="content-input" class="hidden">{{ old('content', $chapter->content ?? '') }}</textarea>
         </div>
@@ -97,7 +97,9 @@
         <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
             <h3 class="text-xl font-semibold text-gray-900">Thư viện Media</h3>
             <button type="button" onclick="closeMediaLibrary()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/></svg>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
                 <span class="sr-only">Đóng</span>
             </button>
         </div>
@@ -117,19 +119,41 @@
     let currentImageSelection = null;
     let quillObj = null;
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         var toolbarOptions = [
-            [{ 'header': [2, 3, 4, false] }],
-            ['bold', 'italic', 'underline', 'strike'], 
+            [{
+                'header': [2, 3, 4, false]
+            }],
+            ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }], 
-            [{ 'direction': 'rtl' }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'align': [] }],
+            [{
+                'list': 'ordered'
+            }, {
+                'list': 'bullet'
+            }],
+            [{
+                'script': 'sub'
+            }, {
+                'script': 'super'
+            }],
+            [{
+                'indent': '-1'
+            }, {
+                'indent': '+1'
+            }],
+            [{
+                'direction': 'rtl'
+            }],
+            [{
+                'color': []
+            }, {
+                'background': []
+            }],
+            [{
+                'align': []
+            }],
             ['link', 'image', 'video'],
-            ['clean'] 
+            ['clean']
         ];
 
         var quill = new Quill('#editor-container', {
@@ -177,7 +201,7 @@
         if (isLoadingMedia) return;
         isLoadingMedia = true;
         let loadMoreBtn = document.getElementById('media-load-more');
-        
+
         if (page > 1 && loadMoreBtn) {
             loadMoreBtn.innerText = 'Đang tải...';
             loadMoreBtn.disabled = true;
@@ -190,15 +214,17 @@
                 const grid = document.getElementById('media-grid');
                 const loading = document.getElementById('media-loading');
                 if (loading) loading.remove();
-                
+
                 if (page === 1) grid.innerHTML = '';
 
-                if(data.data && data.data.length > 0) {
+                if (data.data && data.data.length > 0) {
                     data.data.forEach(url => {
                         const div = document.createElement('div');
                         div.className = 'relative group cursor-pointer border rounded bg-gray-100 aspect-square overflow-hidden hover:border-indigo-500';
-                        div.onclick = function() { selectMediaForQuill(url); };
-                        
+                        div.onclick = function() {
+                            selectMediaForQuill(url);
+                        };
+
                         const img = document.createElement('img');
                         img.src = url;
                         img.loading = 'lazy';
@@ -250,7 +276,7 @@
     }
 
     function selectMediaForQuill(url) {
-        if(currentImageSelection && quillObj) {
+        if (currentImageSelection && quillObj) {
             quillObj.insertEmbed(currentImageSelection.index, 'image', url);
             quillObj.setSelection(currentImageSelection.index + 1);
         }

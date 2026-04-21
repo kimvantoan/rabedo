@@ -14,7 +14,7 @@
             </button>
             <script>
                 function copyShareUrl() {
-                    const shareUrl = '{{ route("articles.show", ["idOrSlug" => $article->id]) }}?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
+                    const shareUrl = '{{ route("articles.show", ["idOrSlug" => $article->id]) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
                     const textArea = document.createElement("textarea");
                     textArea.value = shareUrl;
                     document.body.appendChild(textArea);
@@ -51,20 +51,20 @@
 
         <!-- Error Alert -->
         @if ($errors->any())
-            <div class="rounded-md bg-red-50 p-4 border border-red-200">
-                <div class="flex">
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">Có lỗi xảy ra:</h3>
-                        <div class="mt-2 text-sm text-red-700">
-                            <ul class="list-disc space-y-1 pl-5">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+        <div class="rounded-md bg-red-50 p-4 border border-red-200">
+            <div class="flex">
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Có lỗi xảy ra:</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc space-y-1 pl-5">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>
+        </div>
         @endif
 
         <div>
@@ -88,29 +88,29 @@
                 <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border bg-gray-50" onchange="previewThumbnail(event)">
                 <button type="button" onclick="openMediaLibrary()" class="inline-flex items-center px-4 py-2 border border-blue-500 shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 whitespace-nowrap transition-colors">
                     <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Chọn từ Thư Viện
                 </button>
                 <input type="hidden" name="existing_thumbnail" id="existing_thumbnail" value="{{ old('existing_thumbnail', (isset($article) && Str::startsWith($article->thumbnail, '/storage')) ? $article->thumbnail : '') }}">
             </div>
-            
+
             <div class="mt-3" id="thumbnail-preview-container" style="display: {{ (isset($article) && !empty($article->thumbnail)) ? 'block' : 'none' }}">
                 <p class="text-sm text-gray-500 mb-1">Ảnh hiện tại/Preview:</p>
                 <img id="thumbnail-preview" src="{{ (isset($article) && !empty($article->thumbnail)) ? asset($article->thumbnail) : '' }}" alt="Thumbnail preview" class="h-32 w-auto rounded-lg object-cover border border-gray-200">
             </div>
-            
+
             <script>
                 function previewThumbnail(event) {
-                        const reader = new FileReader();
-                        reader.onload = function(){
-                            const output = document.getElementById('thumbnail-preview');
-                            output.src = reader.result;
-                            document.getElementById('thumbnail-preview-container').style.display = 'block';
-                            // Clear the existing hidden link to avoid ambiguity
-                            document.getElementById('existing_thumbnail').value = '';
-                        };
-                    if(event.target.files[0]){
+                    const reader = new FileReader();
+                    reader.onload = function() {
+                        const output = document.getElementById('thumbnail-preview');
+                        output.src = reader.result;
+                        document.getElementById('thumbnail-preview-container').style.display = 'block';
+                        // Clear the existing hidden link to avoid ambiguity
+                        document.getElementById('existing_thumbnail').value = '';
+                    };
+                    if (event.target.files[0]) {
                         reader.readAsDataURL(event.target.files[0]);
                     }
                 }
@@ -147,7 +147,9 @@
                 <p class="text-sm text-gray-500 mt-1">Dành riêng cho việc đăng truyện nhiều kỳ.</p>
             </div>
             <a href="{{ route('admin.chapters.create', $article->id) }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition border border-transparent shadow-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Tạo Chương Mới
             </a>
         </div>
@@ -172,22 +174,31 @@
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                             <div class="flex items-center justify-end space-x-4">
                                 <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number]) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem Chapter">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
                                 </a>
-                                
+
                                 <button type="button" onclick="copyListShareUrl(this, '{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number]) }}?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                                    </svg>
                                 </button>
 
                                 <a href="{{ route('admin.chapters.edit', $chapter->id) }}" class="text-green-600 hover:text-green-900" title="Sửa">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
                                 </a>
-                                
+
                                 <form action="{{ route('admin.chapters.destroy', $chapter->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xoá chương này?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900 shrink-0" title="Xoá">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
                                     </button>
                                 </form>
                             </div>
@@ -216,11 +227,13 @@
         font-family: inherit;
         font-size: 16px;
     }
+
     .ql-toolbar.ql-snow {
         border-top-left-radius: 0.375rem;
         border-top-right-radius: 0.375rem;
         background-color: #f9fafb;
     }
+
     .ql-container.ql-snow {
         border-bottom-left-radius: 0.375rem;
         border-bottom-right-radius: 0.375rem;
@@ -229,13 +242,25 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
     const toolbarOptions = [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ color: [] }, { background: [] }],
-      [{ align: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image", "video"],
-      ["clean"]
+        [{
+            header: [1, 2, 3, false]
+        }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{
+            color: []
+        }, {
+            background: []
+        }],
+        [{
+            align: []
+        }],
+        [{
+            list: "ordered"
+        }, {
+            list: "bullet"
+        }],
+        ["link", "image", "video"],
+        ["clean"]
     ];
 
     const quill = new Quill('#quill-editor', {
@@ -252,7 +277,7 @@
     });
 
     const contentInput = document.getElementById('content-input');
-    
+
     // Đồng bộ HTML từ Quill sang thẻ input ẩn trước khi Submit
     quill.on('text-change', function() {
         contentInput.value = quill.root.innerHTML;
@@ -273,23 +298,23 @@
             formData.append('_token', '{{ csrf_token() }}');
 
             fetch('{{ route("admin.upload_image") }}', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if(result.url) {
-                    const range = quill.getSelection(true);
-                    quill.insertEmbed(range.index, 'image', result.url);
-                    quill.setSelection(range.index + 1);
-                } else if(result.error) {
-                    alert(result.error.message || 'Lỗi tải ảnh lên.');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Có lỗi xảy ra khi tải ảnh lên.');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.url) {
+                        const range = quill.getSelection(true);
+                        quill.insertEmbed(range.index, 'image', result.url);
+                        quill.setSelection(range.index + 1);
+                    } else if (result.error) {
+                        alert(result.error.message || 'Lỗi tải ảnh lên.');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Có lỗi xảy ra khi tải ảnh lên.');
+                });
         };
     }
 </script>
@@ -300,7 +325,7 @@
         <!-- Background overlay -->
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeMediaLibrary()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        
+
         <!-- Modal panel -->
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -313,7 +338,7 @@
                         </svg>
                     </button>
                 </div>
-                
+
                 <div id="media-loading" class="text-center py-10">
                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-500 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -321,7 +346,7 @@
                     </svg>
                     <p class="text-gray-500 inline-block">Đang tải...</p>
                 </div>
-                
+
                 <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto hidden p-2">
                     <!-- Images will be injected here via JS -->
                 </div>
@@ -362,46 +387,46 @@
         const loading = document.getElementById('media-loading');
         const empty = document.getElementById('media-empty');
         let loadMoreBtn = document.getElementById('media-load-more');
-        
+
         if (page === 1) {
             loading.classList.remove('hidden');
             grid.classList.add('hidden');
             empty.classList.add('hidden');
-            if(loadMoreBtn) loadMoreBtn.classList.add('hidden');
+            if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
             grid.innerHTML = '';
         } else {
-            if(loadMoreBtn) {
+            if (loadMoreBtn) {
                 loadMoreBtn.innerText = 'Đang tải...';
                 loadMoreBtn.disabled = true;
             }
         }
-        
+
         fetch(`{{ route("admin.media") }}?page=${page}`)
             .then(res => res.json())
             .then(result => {
                 isLoadingMedia = false;
                 if (page === 1) loading.classList.add('hidden');
-                
+
                 const images = result.data || [];
                 if (page === 1 && images.length === 0) {
                     empty.classList.remove('hidden');
                     return;
                 }
-                
+
                 grid.classList.remove('hidden');
                 images.forEach(url => {
                     const div = document.createElement('div');
                     div.className = 'relative group rounded-md overflow-hidden border border-gray-200 cursor-pointer aspect-w-4 aspect-h-3 h-32 w-full';
                     div.onclick = () => selectMedia(url);
-                    
+
                     const img = document.createElement('img');
                     img.src = url;
                     img.loading = 'lazy';
                     img.className = 'block object-cover w-full h-full transform group-hover:scale-110 transition duration-300 ease-out';
-                    
+
                     const overlay = document.createElement('div');
                     overlay.className = 'absolute inset-0 bg-indigo-500 bg-opacity-0 group-hover:bg-opacity-20 transition duration-300 flex items-center justify-center';
-                    
+
                     div.appendChild(img);
                     div.appendChild(overlay);
                     grid.appendChild(div);
@@ -431,7 +456,7 @@
                     empty.classList.remove('hidden');
                     empty.innerHTML = '<p class="text-red-500 px-4 py-2">Xảy ra lỗi mạng khi kết nối máy chủ Media. Hãy thử lại.</p>';
                 } else {
-                    if(loadMoreBtn) {
+                    if (loadMoreBtn) {
                         loadMoreBtn.innerText = 'Tải lại';
                         loadMoreBtn.disabled = false;
                     }
@@ -449,15 +474,15 @@
         document.getElementById('existing_thumbnail').value = url;
         // Xoá nội dung file (nếu có) để nhường quyền ưu tiên cho ảnh lấy từ thư viện
         document.getElementById('thumbnail').value = '';
-        
+
         // Hiển thị Preview
         const output = document.getElementById('thumbnail-preview');
         output.src = url;
         document.getElementById('thumbnail-preview-container').style.display = 'block';
-        
+
         closeMediaLibrary();
     }
-    
+
     function copyListShareUrl(btn, url) {
         const textArea = document.createElement("textarea");
         textArea.value = url;
