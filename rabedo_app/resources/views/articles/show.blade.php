@@ -56,7 +56,7 @@
         @endif
         @endif
         
-        <div class="prose prose-lg md:prose-xl max-w-none w-full text-[#333]
+        <div id="article-content-wrapper" class="prose prose-lg md:prose-xl max-w-none w-full text-[#333]
             [&_h2]:text-2xl [&_h2]:md:text-[32px] [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:tracking-tight [&_h2]:leading-tight
             [&_h3]:text-[22px] [&_h3]:md:text-[26px] [&_h3]:mt-10 [&_h3]:mb-4 [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:leading-snug
             [&_h4]:text-[19px] [&_h4]:md:text-[22px] [&_h4]:mt-8 [&_h4]:mb-3 [&_h4]:font-bold [&_h4]:text-gray-700
@@ -73,7 +73,7 @@
                 @endphp
 
                 <!-- Header Block -->
-                <div class="text-center mb-10 not-prose">
+                <div class="text-center mb-10 not-prose relative z-10">
                     <h2 class="text-[22px] md:text-[30px] font-extrabold mb-6 text-gray-800 tracking-tight">Chapter {{ $currentChapter->chapter_number }}: {{ $currentChapter->title }}</h2>
 
                     <!-- Navigation Top -->
@@ -113,23 +113,7 @@
                 </div>
 
                 <!-- Bài viết -->
-                @php
-                    $chapterHtml = $currentChapter->content;
-                    $adHtml = '
-                    <div class="my-6 w-full text-center not-prose">
-                        <ins class="adsbygoogle"
-                            style="display:block"
-                            data-ad-client="ca-pub-4370452252708446"
-                            data-ad-slot="9674028583"
-                            data-ad-format="auto"
-                            data-full-width-responsive="true"></ins>
-                        <script>
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
-                    </div>';
-                    $chapterHtmlWithAd = preg_replace('/<\/p>/i', '</p>' . $adHtml, $chapterHtml, 1);
-                @endphp
-                {!! $chapterHtmlWithAd !!}
+                {!! $currentChapter->content !!}
 
                 <div class="mt-4 md:mt-5 w-full text-center not-prose mb-6">
                     <ins class="adsbygoogle"
@@ -195,6 +179,62 @@
                 </div>
             @endif
         </div>
+
+        <!-- Khối Tiêm Quảng Cáo Động Bằng JS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var contentWrapper = document.getElementById('article-content-wrapper');
+                if (!contentWrapper) return;
+                
+                var isMobile = window.innerWidth < 768;
+                var minParagraphs = isMobile ? 3 : 5; // Cần ít nhất 3 hoặc 5 khổ text
+                var minLength = isMobile ? 200 : 350; // Cần ít nhất 200 hoặc 350 ký tự giữa các quảng cáo
+                
+                var pTags = contentWrapper.querySelectorAll(':scope > p');
+                var injectedCount = 0;
+                var maxAdsToInject = 8; // Tối đa 8 quảng cáo
+                
+                var accumulatedLength = 0;
+                var paragraphsCount = 0;
+                
+                for (var i = 0; i < pTags.length; i++) {
+                    if (injectedCount >= maxAdsToInject) break;
+                    
+                    var p = pTags[i];
+                    accumulatedLength += p.textContent.trim().length;
+                    paragraphsCount++;
+                    
+                    // Chỉ chèn quảng cáo nếu đáp ứng ĐỒNG THỜI 2 điều kiện:
+                    // 1. Phải qua đủ số đoạn văn (3 hoặc 5)
+                    // 2. Tổng khối lượng chữ phải đủ dài (phòng ngừa toàn các câu thoại hội thoại 1 dòng ngắn tũn)
+                    if (paragraphsCount >= minParagraphs && accumulatedLength >= minLength) {
+                        var adContainer = document.createElement('div');
+                        adContainer.className = 'my-6 w-full text-center not-prose inline-ad-container';
+                        adContainer.innerHTML = '<ins class="adsbygoogle"' +
+                            ' style="display:block"' +
+                            ' data-ad-client="ca-pub-4370452252708446"' +
+                            ' data-ad-slot="9674028583"' +
+                            ' data-ad-format="auto"' +
+                            ' data-full-width-responsive="true"></ins>';
+                            
+                        if (p.nextSibling) {
+                            p.parentNode.insertBefore(adContainer, p.nextSibling);
+                        } else {
+                            p.parentNode.appendChild(adContainer);
+                        }
+                        
+                        try {
+                            (window.adsbygoogle = window.adsbygoogle || []).push({});
+                            injectedCount++;
+                        } catch (e) {}
+                        
+                        // Reset lại bộ đếm sau khi chèn 1 block Ad
+                        accumulatedLength = 0;
+                        paragraphsCount = 0;
+                    }
+                }
+            });
+        </script>
 
         <!-- Javascript Data for Chapters Drawer -->
         @if(isset($article->chapters) && $article->chapters->count() > 0)

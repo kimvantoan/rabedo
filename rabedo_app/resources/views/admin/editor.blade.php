@@ -57,7 +57,7 @@
                     <h3 class="text-sm font-medium text-red-800">Có lỗi xảy ra:</h3>
                     <div class="mt-2 text-sm text-red-700">
                         <ul class="list-disc space-y-1 pl-5">
-                            @foreach ($errors->all() as $error)
+                            @foreach (array_unique($errors->all()) as $error)
                             <li>{{ $error }}</li>
                             @endforeach
                         </ul>
@@ -83,7 +83,7 @@
         </div>
 
         <div>
-            <label for="thumbnail" class="block text-sm font-medium text-gray-700">Ảnh đại diện (Thumbnail)</label>
+            <label for="thumbnail" class="block text-sm font-medium text-gray-700">Ảnh đại diện (Thumbnail) <span class="text-red-500">*</span></label>
             <div class="mt-1 flex items-center space-x-4">
                 <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border bg-gray-50" onchange="previewThumbnail(event)">
                 <button type="button" onclick="openMediaLibrary()" class="inline-flex items-center px-4 py-2 border border-blue-500 shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 whitespace-nowrap transition-colors">
@@ -99,6 +99,13 @@
                 <p class="text-sm text-gray-500 mb-1">Ảnh hiện tại/Preview:</p>
                 <img id="thumbnail-preview" src="{{ (isset($article) && !empty($article->thumbnail)) ? asset($article->thumbnail) : '' }}" alt="Thumbnail preview" class="h-32 w-auto rounded-lg object-cover border border-gray-200">
             </div>
+
+            @if($errors->has('thumbnail'))
+            <p class="mt-2 text-sm text-red-600 font-medium">{{ $errors->first('thumbnail') }}</p>
+            @elseif($errors->has('existing_thumbnail'))
+            <p class="mt-2 text-sm text-red-600 font-medium">{{ $errors->first('existing_thumbnail') }}</p>
+            @endif
+            <p id="thumbnail-js-error" class="mt-2 text-sm text-red-600 font-medium hidden">Vui lòng tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.</p>
 
             <script>
                 function previewThumbnail(event) {
@@ -479,6 +486,9 @@
         const output = document.getElementById('thumbnail-preview');
         output.src = url;
         document.getElementById('thumbnail-preview-container').style.display = 'block';
+        
+        const errorP = document.getElementById('thumbnail-js-error');
+        if (errorP) errorP.classList.add('hidden');
 
         closeMediaLibrary();
     }
@@ -499,5 +509,31 @@
         }
         document.body.removeChild(textArea);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[enctype="multipart/form-data"]');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const fileInput = document.getElementById('thumbnail');
+                const hiddenInput = document.getElementById('existing_thumbnail');
+                
+                if (!fileInput.value && !hiddenInput.value) {
+                    e.preventDefault();
+                    
+                    const errorP = document.getElementById('thumbnail-js-error');
+                    if (errorP) errorP.classList.remove('hidden');
+                    
+                    // Cuộn màn hình tới vị trí thẻ input ảnh
+                    fileInput.parentElement.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+        
+        // Ẩn lỗi khi người dùng thay đổi ảnh
+        document.getElementById('thumbnail').addEventListener('change', function() {
+             const errorP = document.getElementById('thumbnail-js-error');
+             if (errorP) errorP.classList.add('hidden');
+        });
+    });
 </script>
 @endsection

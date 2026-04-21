@@ -51,8 +51,11 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'existing_thumbnail' => 'nullable|string',
+            'thumbnail' => 'required_without:existing_thumbnail|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'existing_thumbnail' => 'required_without:thumbnail|string',
+        ], [
+            'thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',
+            'existing_thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',
         ]);
 
         $article = new Article;
@@ -116,8 +119,11 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'existing_thumbnail' => 'nullable|string',
+            'thumbnail' => 'required_without:existing_thumbnail|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'existing_thumbnail' => 'required_without:thumbnail|string',
+        ], [
+            'thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',
+            'existing_thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',
         ]);
 
         $article->title = $validated['title'];
