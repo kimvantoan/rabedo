@@ -206,14 +206,18 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             var contentWrapper = document.getElementById('article-content-wrapper');
             if (!contentWrapper) return;
 
-            var isMobile = window.innerWidth < 768;
-            var minParagraphs = isMobile ? 3 : 5; // Cần ít nhất 3 hoặc 5 khổ text
-            var minLength = isMobile ? 300 : 500; // Cần ít nhất 200 hoặc 350 ký tự giữa các quảng cáo
-
             var pTags = contentWrapper.querySelectorAll(':scope > p');
-            var injectedCount = 0;
-            var maxAdsToInject = 8; // Tối đa 8 quảng cáo
+            var maxAdsToInject = 5; // Tối đa 5 quảng cáo
 
+            var isMobile = window.innerWidth < 768;
+            var baseMinParagraphs = isMobile ? 3 : 5; // Tối thiểu 3 hoặc 5 khổ text
+            var minLength = isMobile ? 300 : 500; // Cần ít nhất 300 hoặc 500 ký tự
+
+            // Chia đều khoảng cách: tính bước nhảy (step) dựa trên tổng số đoạn văn
+            // Dùng Math.max để đảm bảo không bị quá dày đặc (vẫn giữ baseMinParagraphs)
+            var step = Math.max(baseMinParagraphs, Math.floor(pTags.length / (maxAdsToInject + 1)));
+
+            var injectedCount = 0;
             var accumulatedLength = 0;
             var paragraphsCount = 0;
 
@@ -224,10 +228,10 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                 accumulatedLength += p.textContent.trim().length;
                 paragraphsCount++;
 
-                // Chỉ chèn quảng cáo nếu đáp ứng ĐỒNG THỜI 2 điều kiện:
-                // 1. Phải qua đủ số đoạn văn (3 hoặc 5)
-                // 2. Tổng khối lượng chữ phải đủ dài (phòng ngừa toàn các câu thoại hội thoại 1 dòng ngắn tũn)
-                if (paragraphsCount >= minParagraphs && accumulatedLength >= minLength) {
+                // Điều kiện chèn quảng cáo:
+                // 1. Qua đủ số đoạn văn được chia đều (step)
+                // 2. Tổng khối lượng chữ đủ dài để tránh chèn vào giữa các câu ngắn
+                if (paragraphsCount >= step && accumulatedLength >= minLength) {
                     var adContainer = document.createElement('div');
                     adContainer.className = 'my-6 w-full text-center not-prose inline-ad-container';
                     adContainer.innerHTML = '<ins class="adsbygoogle"' +
