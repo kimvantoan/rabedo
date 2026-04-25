@@ -51,7 +51,6 @@
         </div>
     </div>
 
-    <!-- Quảng cáo -->
     <div class="mt-2 mb-8 md:mb-10 w-full text-center">
         <ins class="adsbygoogle"
              style="display:block"
@@ -102,17 +101,6 @@
         @endif
     </div>
 
-    <!-- Quảng cáo cuối trang -->
-    <div class="mt-12 w-full text-center">
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-client="ca-pub-4370452252708446"
-            data-ad-slot="9674028583"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
+
 </article>
 @endsection

@@ -125,17 +125,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             <!-- Bài viết -->
             {!! $currentChapter->content !!}
 
-            <div class="mt-4 md:mt-5 w-full text-center not-prose mb-6">
-                <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-4370452252708446"
-                    data-ad-slot="9674028583"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
+
 
             <!-- Navigation Bottom -->
             <div class="pt-6 flex flex-row justify-center items-center gap-2 sm:gap-4 not-prose border-t border-gray-200">
@@ -186,79 +176,11 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             @else
             {!! $article->content !!}
 
-            <div class="mt-4 md:mt-5 w-full text-center not-prose">
-                <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-4370452252708446"
-                    data-ad-slot="9674028583"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
+
             @endif
     </div>
 
-    <!-- Khối Tiêm Quảng Cáo Động Bằng JS -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var contentWrapper = document.getElementById('article-content-wrapper');
-            if (!contentWrapper) return;
 
-            var pTags = contentWrapper.querySelectorAll(':scope > p');
-            var maxAdsToInject = 5; // Tối đa 5 quảng cáo
-
-            var isMobile = window.innerWidth < 768;
-            var baseMinParagraphs = isMobile ? 3 : 5; // Tối thiểu 3 hoặc 5 khổ text
-            var minLength = isMobile ? 300 : 500; // Cần ít nhất 300 hoặc 500 ký tự
-
-            // Chia đều khoảng cách: tính bước nhảy (step) dựa trên tổng số đoạn văn
-            // Dùng Math.max để đảm bảo không bị quá dày đặc (vẫn giữ baseMinParagraphs)
-            var step = Math.max(baseMinParagraphs, Math.floor(pTags.length / (maxAdsToInject + 1)));
-
-            var injectedCount = 0;
-            var accumulatedLength = 0;
-            var paragraphsCount = 0;
-
-            for (var i = 0; i < pTags.length; i++) {
-                if (injectedCount >= maxAdsToInject) break;
-
-                var p = pTags[i];
-                accumulatedLength += p.textContent.trim().length;
-                paragraphsCount++;
-
-                // Điều kiện chèn quảng cáo:
-                // 1. Qua đủ số đoạn văn được chia đều (step)
-                // 2. Tổng khối lượng chữ đủ dài để tránh chèn vào giữa các câu ngắn
-                if (paragraphsCount >= step && accumulatedLength >= minLength) {
-                    var adContainer = document.createElement('div');
-                    adContainer.className = 'my-6 w-full text-center not-prose inline-ad-container';
-                    adContainer.innerHTML = '<ins class="adsbygoogle"' +
-                        ' style="display:block"' +
-                        ' data-ad-client="ca-pub-4370452252708446"' +
-                        ' data-ad-slot="9674028583"' +
-                        ' data-ad-format="auto"' +
-                        ' data-full-width-responsive="true"></ins>';
-
-                    if (p.nextSibling) {
-                        p.parentNode.insertBefore(adContainer, p.nextSibling);
-                    } else {
-                        p.parentNode.appendChild(adContainer);
-                    }
-
-                    try {
-                        (window.adsbygoogle = window.adsbygoogle || []).push({});
-                        injectedCount++;
-                    } catch (e) {}
-
-                    // Reset lại bộ đếm sau khi chèn 1 block Ad
-                    accumulatedLength = 0;
-                    paragraphsCount = 0;
-                }
-            }
-        });
-    </script>
 
     <!-- Javascript Data for Chapters Drawer -->
     @if(isset($article->chapters) && $article->chapters->count() > 0)
