@@ -10,11 +10,27 @@ use Illuminate\Validation\Rule;
 
 class AdminUserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::withCount('articles')
-            ->orderBy('id', 'desc')
-            ->paginate(15)->onEachSide(1);
+        $viewDate = $request->input('view_date');
+        $viewMonth = $request->input('view_month');
+        
+        $users = User::withCount('articles');
+            
+        if ($viewDate || $viewMonth) {
+            $users->withSum(['articleViews as total_views' => function ($q) use ($viewDate, $viewMonth) {
+                if ($viewDate) {
+                    $q->where('article_views.view_date', $viewDate);
+                } elseif ($viewMonth) {
+                    $q->where('article_views.view_date', 'like', $viewMonth . '%');
+                }
+            }], 'views');
+        } else {
+            $users->withSum('articles as total_views', 'views');
+        }
+
+        $users = $users->orderBy('id', 'desc')->paginate(15)->appends($request->all())->onEachSide(1);
+        
         return view('admin.users.index', compact('users'));
     }
 
@@ -50,6 +66,10 @@ class AdminUserController extends Controller
 
         if ($search = $request->input('search')) {
             $query->where('title', 'like', "%{$search}%");
+        }
+
+        if ($date = $request->input('date')) {
+            $query->whereDate('created_at', $date);
         }
 
         $sortColumn = $request->input('sort', 'created_at');

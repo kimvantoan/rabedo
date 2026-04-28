@@ -9,12 +9,15 @@ class ArticleController extends Controller
 {
     public function show($idOrSlug)
     {
-        // Try finding by ID first, then fallback to slug
         $article = Article::with('chapters')->where('id', $idOrSlug)
                           ->orWhere('slug', $idOrSlug)
                           ->firstOrFail();
 
         $article->increment('views');
+        \App\Models\ArticleView::firstOrCreate(
+            ['article_id' => $article->id, 'view_date' => now()->toDateString()],
+            ['views' => 0]
+        )->increment('views');
         
         $currentChapter = null;
         if ($article->chapters->count() > 0) {
@@ -39,6 +42,10 @@ class ArticleController extends Controller
         $currentChapter = $article->chapters->where('chapter_number', $chapterNumber)->firstOrFail();
 
         $article->increment('views');
+        \App\Models\ArticleView::firstOrCreate(
+            ['article_id' => $article->id, 'view_date' => now()->toDateString()],
+            ['views' => 0]
+        )->increment('views');
         
         $relatedArticles = Article::where('id', '!=', $article->id)
                                   ->where('type', $article->type)

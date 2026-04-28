@@ -34,4 +34,8 @@ class Article extends Model
     {
         return $this->hasMany(Chapter::class)->orderBy('chapter_number', 'asc');
     }
+    public function articleViews()
+    {
+        return $this->hasMany(ArticleView::class);
+    }
 }

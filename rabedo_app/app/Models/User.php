@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Article::class);
     }
+
+    public function articleViews()
+    {
+        return $this->hasManyThrough(ArticleView::class, Article::class);
+    }
 }

@@ -50,6 +50,23 @@
         </div>
     @endif
 
+    <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <form action="{{ route('users.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
+            <div class="relative w-full sm:w-auto">
+                <input type="date" name="view_date" id="view_date" value="{{ request('view_date') }}" onchange="document.getElementById('view_month').value=''" title="Lọc theo ngày cụ thể" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="relative w-full sm:w-auto">
+                <input type="month" name="view_month" id="view_month" value="{{ request('view_month') }}" onchange="document.getElementById('view_date').value=''" title="Lọc theo tháng" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">Lọc View</button>
+                @if(request('view_date') || request('view_month'))
+                <a href="{{ route('users.index') }}" class="inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 whitespace-nowrap w-full sm:w-auto text-center">Xoá lọc</a>
+                @endif
+            </div>
+        </form>
+    </div>
+
     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
         <table class="min-w-full divide-y divide-gray-300 bg-white">
             <thead class="bg-gray-50">
@@ -59,6 +76,7 @@
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Username</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Ngày tạo</th>
+                    <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Tổng View</th>
                     <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Số bài đăng</th>
                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                         <span class="sr-only">Hành động</span>
@@ -73,6 +91,11 @@
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->username }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->email }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y') }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
+                        <span class="inline-flex items-center rounded-full bg-purple-50 border border-purple-200 px-2.5 py-0.5 text-xs font-semibold text-purple-600">
+                            {{ number_format($user->total_views ?? 0) }}
+                        </span>
+                    </td>
                     <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
                         <span class="inline-flex items-center rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-xs font-semibold text-blue-600">
                             {{ $user->articles_count }}
@@ -105,7 +128,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="py-4 text-center text-gray-500">Chưa có hệ thống tài khoản nào</td>
+                    <td colspan="8" class="py-4 text-center text-gray-500">Chưa có hệ thống tài khoản nào</td>
                 </tr>
                 @endforelse
             </tbody>

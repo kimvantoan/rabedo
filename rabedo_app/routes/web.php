@@ -61,18 +61,34 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // TEMPORARY ROUTE FOR CPANEL UPDATE (DELETE AFTER USE)
-Route::get('/cpanel-update-database', function() {
+Route::get('/cpanel-update-views', function() {
     try {
-        // 1. Chạy cập nhật tự động thêm 3 cột Database mới (migrate)
+        // 1. Chạy cập nhật tự động thêm bảng article_views mới
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         
         // 2. Dọn dẹp bộ nhớ đệm cũ (clear cache)
         \Illuminate\Support\Facades\Artisan::call('optimize:clear');
         
-        // 3. Đánh dấu tài khoản thành Admin vĩnh viễn
-        \App\Models\User::where('email', 'superadmin@rabedo.com')->update(['is_admin' => true]);
+        // 3. Đồng bộ hóa view cũ
+        $articles = \App\Models\Article::where('views', '>', 0)->get();
+        $count = 0;
+
+        foreach($articles as $article) {
+            $date = $article->created_at ? $article->created_at->toDateString() : now()->toDateString();
+            
+            $hasViews = \App\Models\ArticleView::where('article_id', $article->id)->exists();
+            
+            if (!$hasViews) {
+                \App\Models\ArticleView::create([
+                    'article_id' => $article->id,
+                    'view_date' => $date,
+                    'views' => $article->views
+                ]);
+                $count++;
+            }
+        }
         
-        return "Tất cả mọi thứ đã được cập nhật thành công! Hãy QUAY LẠI FILE ROUTES VÀ XOÁ ĐOẠN CODE NÀY ĐI BẢO MẬT!";
+        return "Tất cả mọi thứ đã được cập nhật thành công! Đã đồng bộ {$count} bài viết có view cũ. Hãy QUAY LẠI FILE ROUTES VÀ XOÁ ĐOẠN CODE NÀY ĐI BẢO MẬT!";
     } catch (\Exception $e) {
         return "Gặp lỗi: " . $e->getMessage();
     }
