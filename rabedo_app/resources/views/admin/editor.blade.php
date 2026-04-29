@@ -14,7 +14,7 @@
             </button>
             <script>
                 function copyShareUrl() {
-                    const shareUrl = '{{ route("articles.show", ["idOrSlug" => $article->id]) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
+                    const shareUrl = '{{ rtrim(config("app.url"), "/") . route("articles.show", ["idOrSlug" => $article->id], false) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
                     const textArea = document.createElement("textarea");
                     textArea.value = shareUrl;
                     document.body.appendChild(textArea);
@@ -29,7 +29,7 @@
                     document.body.removeChild(textArea);
                 }
             </script>
-            <a href="{{ route('articles.show', [$article->id]) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
+            <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id], false) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
                 <svg class="mr-2 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -180,14 +180,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $chapter->created_at->format('d/m/Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                             <div class="flex items-center justify-end space-x-4">
-                                <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number]) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem Chapter">
+                                <a href="{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem Chapter">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </a>
 
-                                <button type="button" onclick="copyListShareUrl(this, '{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number]) }}?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
+                                <button type="button" onclick="copyListShareUrl(this, '{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                                     </svg>

@@ -19,7 +19,7 @@
             </button>
             <script>
                 function copyShareUrl() {
-                    const shareUrl = '{{ route("articles.chapter", ["idOrSlug" => $article->id, "chapterNumber" => $chapter->chapter_number]) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
+                    const shareUrl = '{{ rtrim(config("app.url"), "/") . route("articles.chapter", ["idOrSlug" => $article->id, "chapterNumber" => $chapter->chapter_number], false) }}/?utm_source={{ $article->user?->username ?? "admin" }}&utm_medium=social';
                     const textArea = document.createElement("textarea");
                     textArea.value = shareUrl;
                     document.body.appendChild(textArea);
