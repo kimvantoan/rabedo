@@ -6,7 +6,7 @@
     <div>
       <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Đăng nhập Admin</h2>
       <p class="mt-2 text-center text-sm text-gray-600">
-        Hoặc <a href="{{ route('home') }}" class="font-medium text-indigo-600 hover:text-indigo-500">về trang chủ</a>
+        Hoặc <a href="{{ url('/') }}" class="font-medium text-indigo-600 hover:text-indigo-500">về trang chủ</a>
       </p>
     </div>
     

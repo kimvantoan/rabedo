@@ -1,4 +1,10 @@
 <IfModule mod_rewrite.c>
+    # Disable LiteSpeed Cache completely for debugging
+    <IfModule LiteSpeed>
+        CacheDisable public /
+        CacheDisable private /
+    </IfModule>
+
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -22,4 +28,10 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+    # Prevent caching for dynamic routes on LiteSpeed
+    <IfModule LiteSpeed>
+        RewriteCond %{REQUEST_URI} ^/(admin|login|logout)
+        RewriteRule .* - [E=Cache-Control:no-cache]
+    </IfModule>
 </IfModule>

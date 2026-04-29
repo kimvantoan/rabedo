@@ -6,7 +6,18 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 
+// Luôn luôn khai báo route 'home' để các file View (như login) gọi hàm route('home') không bị lỗi
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+$adminDomain = env('ADMIN_DOMAIN');
+$host = request()->getHost();
+
+if ($adminDomain && $host === $adminDomain) {
+    // Nếu vào trang chủ bằng tên miền admin, sẽ GHI ĐÈ route '/' để đá sang trang quản trị
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    })->name('home');
+}
 
 Route::get('/articles/{idOrSlug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/articles/{idOrSlug}/chapter-{chapterNumber}', [ArticleController::class, 'showChapter'])->name('articles.chapter');
@@ -38,7 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'cache.headers:no_ca
     Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
     Route::get('/media', [AdminController::class, 'getMedia'])->name('admin.media');
     Route::post('/upload-image', [AdminController::class, 'uploadImage'])->name('admin.upload_image');
-    
+
     // Chapter Management Routes
     Route::get('/articles/{articleId}/chapters/create', [App\Http\Controllers\AdminChapterController::class, 'create'])->name('admin.chapters.create');
     Route::post('/articles/{articleId}/chapters', [App\Http\Controllers\AdminChapterController::class, 'store'])->name('admin.chapters.store');
@@ -47,7 +58,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'cache.headers:no_ca
     Route::delete('/chapters/{id}', [App\Http\Controllers\AdminChapterController::class, 'destroy'])->name('admin.chapters.destroy');
     // AI Route
     Route::get('/generate-ai', [App\Http\Controllers\AiController::class, 'generate'])->name('admin.generate_ai');
-    
+
     // User Account Management
     Route::middleware(['admin'])->group(function () {
         Route::resource('users', \App\Http\Controllers\AdminUserController::class);
@@ -56,28 +67,31 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'cache.headers:no_ca
 
 // Since the user asked to use their existing users table, we just provide a basic manual login fallback
 // If Breeze is installed later, it will override this, but for now we provide basic auth scaffolding
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Auth Routes (protected by no-cache)
+Route::middleware(['cache.headers:no_cache;no_store;max_age=0;must_revalidate'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 // TEMPORARY ROUTE FOR CPANEL UPDATE (DELETE AFTER USE)
-Route::get('/cpanel-update-views', function() {
+Route::get('/cpanel-update-views', function () {
     try {
         // 1. Chạy cập nhật tự động thêm bảng article_views mới
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        
+
         // 2. Dọn dẹp bộ nhớ đệm cũ (clear cache)
         \Illuminate\Support\Facades\Artisan::call('optimize:clear');
-        
+
         // 3. Đồng bộ hóa view cũ
         $articles = \App\Models\Article::where('views', '>', 0)->get();
         $count = 0;
 
-        foreach($articles as $article) {
+        foreach ($articles as $article) {
             $date = $article->created_at ? $article->created_at->toDateString() : now()->toDateString();
-            
+
             $hasViews = \App\Models\ArticleView::where('article_id', $article->id)->exists();
-            
+
             if (!$hasViews) {
                 \App\Models\ArticleView::create([
                     'article_id' => $article->id,
@@ -87,7 +101,7 @@ Route::get('/cpanel-update-views', function() {
                 $count++;
             }
         }
-        
+
         return "Tất cả mọi thứ đã được cập nhật thành công! Đã đồng bộ {$count} bài viết có view cũ. Hãy QUAY LẠI FILE ROUTES VÀ XOÁ ĐOẠN CODE NÀY ĐI BẢO MẬT!";
     } catch (\Exception $e) {
         return "Gặp lỗi: " . $e->getMessage();
