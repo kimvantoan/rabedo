@@ -84,6 +84,7 @@
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tiêu đề</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Biên tập viên</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden sm:table-cell">Ngày tạo</th>
+                    @if(auth()->check() && auth()->user()->is_admin)
                     <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">
                         @php
                         $viewSortDir = request('sort') === 'views' && request('dir') === 'desc' ? 'asc' : 'desc';
@@ -109,6 +110,7 @@
                             </span>
                         </a>
                     </th>
+                    @endif
                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6 whitespace-nowrap">
                         <span class="sr-only">Hành động</span>
                     </th>
@@ -123,11 +125,13 @@
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $article->user?->name ?: '-' }}</td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 hidden sm:table-cell">{{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}</td>
+                    @if(auth()->check() && auth()->user()->is_admin)
                     <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
                         <span class="inline-flex items-center rounded-full bg-gray-50 border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
                             {{ number_format($article->views ?? 0) }}
                         </span>
                     </td>
+                    @endif
                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium sm:pr-6">
                         <div class="flex items-center justify-end space-x-3">
                             <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id], false) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem">
@@ -163,7 +167,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="py-4 text-center text-gray-500">Không có bài viết nào</td>
+                    <td colspan="{{ (auth()->check() && auth()->user()->is_admin) ? '6' : '5' }}" class="py-4 text-center text-gray-500">Không có bài viết nào</td>
                 </tr>
                 @endforelse
             </tbody>
