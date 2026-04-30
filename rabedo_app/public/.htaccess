@@ -1,15 +1,16 @@
 <IfModule mod_rewrite.c>
-    # Disable LiteSpeed Cache completely for debugging
-    <IfModule LiteSpeed>
-        CacheDisable public /
-        CacheDisable private /
-    </IfModule>
 
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
+
+    # Gỡ bỏ giới hạn Iframe để Google Adsense Preview có thể nhúng và quét trang web
+    <IfModule mod_headers.c>
+        Header always unset X-Frame-Options
+        Header unset X-Frame-Options
+    </IfModule>
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -29,9 +30,4 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-    # Prevent caching for dynamic routes on LiteSpeed
-    <IfModule LiteSpeed>
-        RewriteCond %{REQUEST_URI} ^/(admin|login|logout)
-        RewriteRule .* - [E=Cache-Control:no-cache]
-    </IfModule>
 </IfModule>

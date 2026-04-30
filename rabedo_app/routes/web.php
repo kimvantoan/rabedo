@@ -68,11 +68,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'cache.headers:no_ca
 // Since the user asked to use their existing users table, we just provide a basic manual login fallback
 // If Breeze is installed later, it will override this, but for now we provide basic auth scaffolding
 // Auth Routes (protected by no-cache)
-Route::middleware(['cache.headers:no_cache;no_store;max_age=0;must_revalidate'])->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // TEMPORARY ROUTE FOR CPANEL UPDATE (DELETE AFTER USE)
 Route::get('/cpanel-update-views', function () {
