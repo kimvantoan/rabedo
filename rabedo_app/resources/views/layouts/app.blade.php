@@ -26,25 +26,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-              serif: ['Lora', 'ui-serif', 'Georgia', 'serif'],
-            },
-            colors: {
-              blue: {
-                600: '#2563eb',
-              }
-            }
-          }
-        }
-      }
-    </script>
+    <!-- Vite / Local Tailwind CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-full flex flex-col antialiased bg-white text-black">
     <header class="border-b bg-white relative top-0 z-50">

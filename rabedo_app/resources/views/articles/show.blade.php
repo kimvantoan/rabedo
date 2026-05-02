@@ -16,7 +16,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
 @section('content')
 <article class="mx-auto max-w-4xl w-full px-4 sm:px-6 lg:px-8 mb-20 md:mb-24 bg-white pt-12 text-left">
-    <h1 class="text-[32px] md:text-[40px] lg:text-[44px] font-extrabold text-[#1a1a1a] leading-[1.3] tracking-tight mb-5">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1a1a1a] leading-[1.3] tracking-tight mb-5">
         {{ $article->title }}
     </h1>
     <div class="mt-2 mb-5 md:mb-6 w-full text-center">
@@ -33,7 +33,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
     @if(!(isset($currentChapter) && $currentChapter->chapter_number >= 2))
     @if(!empty($article->description))
-    <p class="text-xl md:text-[22px] text-gray-600 leading-relaxed font-sans font-medium mb-6">
+    <p class="text-xl md:text-2xl text-gray-600 leading-relaxed font-sans font-medium mb-6">
         {{ $article->description }}
     </p>
     @endif
@@ -57,14 +57,14 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
     @endif
 
     <div id="article-content-wrapper" class="prose prose-lg md:prose-xl max-w-none w-full text-[#333]
-            [&_h2]:text-2xl [&_h2]:md:text-[32px] [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:tracking-tight [&_h2]:leading-tight
-            [&_h3]:text-[22px] [&_h3]:md:text-[26px] [&_h3]:mt-10 [&_h3]:mb-4 [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:leading-snug
-            [&_h4]:text-[19px] [&_h4]:md:text-[22px] [&_h4]:mt-8 [&_h4]:mb-3 [&_h4]:font-bold [&_h4]:text-gray-700
-            [&_p]:text-[18px] [&_p]:md:text-[20px] [&_p]:leading-[1.65] [&_p]:text-[#333] [&_p]:mb-6 [&_p:last-child]:mb-0 [&_p:empty]:hidden [&_p:has(>br:only-child)]:hidden [&_p]:font-sans [&_p]:whitespace-normal [&_p]:break-words [&_p]:text-left
-            [&_blockquote]:border-l-4 [&_blockquote]:border-red-600 [&_blockquote]:pl-6 [&_blockquote]:md:pl-8 [&_blockquote]:italic [&_blockquote]:text-[22px] [&_blockquote]:md:text-[26px] [&_blockquote]:text-gray-900 [&_blockquote]:bg-gray-50 [&_blockquote]:py-6 [&_blockquote]:pr-6 [&_blockquote]:rounded-r-xl [&_blockquote]:my-10 [&_blockquote]:leading-relaxed [&_blockquote]:text-left
+            [&_h2]:text-2xl [&_h2]:md:text-4xl [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:tracking-tight [&_h2]:leading-tight
+            [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:mt-10 [&_h3]:mb-4 [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:leading-snug
+            [&_h4]:text-xl [&_h4]:md:text-2xl [&_h4]:mt-8 [&_h4]:mb-3 [&_h4]:font-bold [&_h4]:text-gray-700
+            [&_p]:text-lg [&_p]:md:text-xl [&_p]:leading-[1.65] [&_p]:text-[#333] [&_p]:mb-6 [&_p:last-child]:mb-0 [&_p:empty]:hidden [&_p:has(>br:only-child)]:hidden [&_p]:font-sans [&_p]:whitespace-normal [&_p]:break-words [&_p]:text-left
+            [&_blockquote]:border-l-4 [&_blockquote]:border-red-600 [&_blockquote]:pl-6 [&_blockquote]:md:pl-8 [&_blockquote]:italic [&_blockquote]:text-2xl [&_blockquote]:md:text-3xl [&_blockquote]:text-gray-900 [&_blockquote]:bg-gray-50 [&_blockquote]:py-6 [&_blockquote]:pr-6 [&_blockquote]:rounded-r-xl [&_blockquote]:my-10 [&_blockquote]:leading-relaxed [&_blockquote]:text-left
             [&_img]:rounded-none [&_img]:w-full [&_img]:my-10 [&_img]:shadow-md
-            [&_figcaption]:text-center [&_figcaption]:text-[13px] [&_figcaption]:text-gray-500 [&_figcaption]:mt-3
-            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-[18px] [&_li]:md:text-[20px] [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-left">
+            [&_figcaption]:text-center [&_figcaption]:text-sm [&_figcaption]:text-gray-500 [&_figcaption]:mt-3
+            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-lg [&_li]:md:text-xl [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-left">
         @if(isset($currentChapter))
         <!-- Lấy Previous và Next -->
         @php
@@ -74,7 +74,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
             <!-- Header Block -->
             <div class="text-center mb-10 not-prose relative z-10">
-                <h2 class="text-[22px] md:text-[30px] font-extrabold mb-6 text-gray-800 tracking-tight">Chapter {{ $currentChapter->chapter_number }}: {{ $currentChapter->title }}</h2>
+                <h2 class="text-2xl md:text-3xl font-extrabold mb-6 text-gray-800 tracking-tight">Chapter {{ $currentChapter->chapter_number }}: {{ $currentChapter->title }}</h2>
 
                 <!-- Navigation Top -->
                 <div class="flex flex-row justify-center items-center gap-2 sm:gap-4">
@@ -365,24 +365,24 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             </div>
             @endif
             <div class="flex flex-col flex-1 px-1">
-                <div class="text-[0.9rem] text-gray-500 mb-2 font-medium">
+                <div class="text-sm text-gray-500 mb-2 font-medium">
                     <time datetime="{{ $relArticle->created_at }}">
                         {{ \Carbon\Carbon::parse($relArticle->created_at)->format('M d, Y') }}
                     </time>
                 </div>
                 <div class="mb-3">
-                    <h3 class="text-[1.25rem] font-bold font-sans leading-tight text-[#0a1e3f] group-hover:text-[#9d080a] transition-colors line-clamp-2">
+                    <h3 class="text-xl font-bold font-sans leading-tight text-blue-950 group-hover:text-red-800 transition-colors line-clamp-2">
                         <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', ['idOrSlug' => $relArticle->id], false) }}/?utm_source={{ $relArticle->user?->username ?? 'admin' }}&utm_medium=social">
                             <span class="absolute inset-0"></span>
                             {{ $relArticle->title }}
                         </a>
                     </h3>
                 </div>
-                <div class="text-gray-600 text-[0.95rem] line-clamp-3 mb-4 leading-relaxed">
+                <div class="text-gray-600 text-base line-clamp-3 mb-4 leading-relaxed">
                     {{ \Illuminate\Support\Str::limit(strip_tags($relArticle->content), 120) }}
                 </div>
                 <div class="mt-auto flex justify-end">
-                    <span class="text-[#9d080a] font-bold text-sm flex items-center gap-1 group-hover:text-[#681313] transition-colors relative">
+                    <span class="text-red-800 font-bold text-sm flex items-center gap-1 group-hover:text-red-900 transition-colors relative">
                         Read Article
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[2.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />

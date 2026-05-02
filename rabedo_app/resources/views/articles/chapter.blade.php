@@ -65,14 +65,14 @@
     
     <!-- Nội dung chính -->
     <div class="prose prose-lg md:prose-xl max-w-none w-full text-[#333]
-        [&_h2]:text-2xl [&_h2]:md:text-[32px] [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:tracking-tight [&_h2]:leading-tight
-        [&_h3]:text-[22px] [&_h3]:md:text-[26px] [&_h3]:mt-10 [&_h3]:mb-4 [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:leading-snug
-        [&_h4]:text-[19px] [&_h4]:md:text-[22px] [&_h4]:mt-8 [&_h4]:mb-3 [&_h4]:font-bold [&_h4]:text-gray-700
-        [&_p]:text-[18px] [&_p]:md:text-[20px] [&_p]:leading-[1.8] [&_p]:text-[#333] [&_p]:mb-6 [&_p:last-child]:mb-0 [&_p:empty]:hidden [&_p:has(>br:only-child)]:hidden [&_p]:font-sans [&_p]:whitespace-normal [&_p]:break-words [&_p]:text-left
-        [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-600 [&_blockquote]:pl-6 [&_blockquote]:md:pl-8 [&_blockquote]:italic [&_blockquote]:text-[22px] [&_blockquote]:md:text-[26px] [&_blockquote]:text-gray-900 [&_blockquote]:bg-gray-50 [&_blockquote]:py-6 [&_blockquote]:pr-6 [&_blockquote]:rounded-r-xl [&_blockquote]:my-10 [&_blockquote]:leading-relaxed [&_blockquote]:text-left
+        [&_h2]:text-2xl [&_h2]:md:text-4xl [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:tracking-tight [&_h2]:leading-tight
+        [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:mt-10 [&_h3]:mb-4 [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:leading-snug
+        [&_h4]:text-xl [&_h4]:md:text-2xl [&_h4]:mt-8 [&_h4]:mb-3 [&_h4]:font-bold [&_h4]:text-gray-700
+        [&_p]:text-lg [&_p]:md:text-xl [&_p]:leading-[1.8] [&_p]:text-[#333] [&_p]:mb-6 [&_p:last-child]:mb-0 [&_p:empty]:hidden [&_p:has(>br:only-child)]:hidden [&_p]:font-sans [&_p]:whitespace-normal [&_p]:break-words [&_p]:text-left
+        [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-600 [&_blockquote]:pl-6 [&_blockquote]:md:pl-8 [&_blockquote]:italic [&_blockquote]:text-2xl [&_blockquote]:md:text-3xl [&_blockquote]:text-gray-900 [&_blockquote]:bg-gray-50 [&_blockquote]:py-6 [&_blockquote]:pr-6 [&_blockquote]:rounded-r-xl [&_blockquote]:my-10 [&_blockquote]:leading-relaxed [&_blockquote]:text-left
         [&_img]:rounded-xl [&_img]:w-full [&_img]:max-w-2xl [&_img]:mx-auto [&_img]:my-10 [&_img]:shadow-md
-        [&_figcaption]:text-center [&_figcaption]:text-[13px] [&_figcaption]:text-gray-500 [&_figcaption]:mt-3
-        [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-[18px] [&_li]:md:text-[20px] [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-left">
+        [&_figcaption]:text-center [&_figcaption]:text-sm [&_figcaption]:text-gray-500 [&_figcaption]:mt-3
+        [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul]:space-y-2 [&_li]:text-lg [&_li]:md:text-xl [&_li]:font-sans [&_li]:text-[#333] [&_li]:whitespace-normal [&_li]:break-words [&_li]:text-left">
         {!! $chapter->content !!}
     </div>
 
