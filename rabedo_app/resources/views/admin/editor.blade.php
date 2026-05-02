@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+<div class="mx-auto max-w-5xl px-4 py-8 sm_px-6 lg_px-8">
     <div class="mb-8 flex items-center justify-between">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ isset($article) ? 'Chỉnh sửa bài viết' : 'Viết bài mới' }}</h1>
         <div class="flex items-center space-x-4">
             @if(isset($article))
-            <button type="button" onclick="copyShareUrl()" class="inline-flex items-center justify-center rounded-md border border-[#9d080a] bg-[#9d080a] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#7a0608] transition" id="share-btn">
+            <button type="button" onclick="copyShareUrl()" class="inline-flex items-center justify-center rounded-md border border-[#9d080a] bg-[#9d080a] px-4 py-2 text-sm font-medium text-white shadow-sm hover_bg-[#7a0608] transition" id="share-btn">
                 <svg class="mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
@@ -29,17 +29,17 @@
                     document.body.removeChild(textArea);
                 }
             </script>
-            <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id], false) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
+            <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id], false) }}" target="_blank" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover_bg-gray-50 transition">
                 <svg class="mr-2 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
                 Xem bài viết
             </a>
             @endif
-            <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900 border-r border-gray-300 pr-4">Quay lại Dashboard</a>
+            <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-500 hover_text-gray-900 border-r border-gray-300 pr-4">Quay lại Dashboard</a>
             <form action="{{ route('logout') }}" method="POST" class="inline pl-4">
                 @csrf
-                <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                <button type="submit" class="text-sm font-medium text-red-600 hover_text-red-800">
                     Đăng xuất
                 </button>
             </form>
@@ -70,14 +70,14 @@
         <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Tiêu đề bài viết</label>
             <div class="mt-1">
-                <input type="text" name="title" id="title" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border placeholder-gray-400" placeholder="Nhập tiêu đề..." value="{{ old('title', $article->title ?? '') }}" required>
+                <input type="text" name="title" id="title" class="block w-full rounded-md border-gray-300 shadow-sm focus_border-indigo-500 focus_ring-indigo-500 sm_text-sm p-3 border placeholder-gray-400" placeholder="Nhập tiêu đề..." value="{{ old('title', $article->title ?? '') }}" required>
             </div>
         </div>
 
         <div>
             <label for="description" class="block text-sm font-medium text-gray-700">Mô tả ngắn (Description)</label>
             <div class="mt-1">
-                <textarea name="description" id="description" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border placeholder-gray-400" placeholder="Nhập mô tả ngắn hiện dưới tiêu đề...">{{ old('description', $article->description ?? '') }}</textarea>
+                <textarea name="description" id="description" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus_border-indigo-500 focus_ring-indigo-500 sm_text-sm p-3 border placeholder-gray-400" placeholder="Nhập mô tả ngắn hiện dưới tiêu đề...">{{ old('description', $article->description ?? '') }}</textarea>
             </div>
             <p class="mt-2 text-sm text-gray-500">Đoạn text ngắn hiển thị ngay dưới Tiêu đề và thay cho Meta Description.</p>
         </div>
@@ -85,8 +85,8 @@
         <div>
             <label for="thumbnail" class="block text-sm font-medium text-gray-700">Ảnh đại diện (Thumbnail) <span class="text-red-500">*</span></label>
             <div class="mt-1 flex items-center space-x-4">
-                <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border bg-gray-50" onchange="previewThumbnail(event)">
-                <button type="button" onclick="openMediaLibrary()" class="inline-flex items-center px-4 py-2 border border-blue-500 shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 whitespace-nowrap transition-colors">
+                <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="block w-full rounded-md border-gray-300 shadow-sm focus_border-indigo-500 focus_ring-indigo-500 sm_text-sm p-2 border bg-gray-50" onchange="previewThumbnail(event)">
+                <button type="button" onclick="openMediaLibrary()" class="inline-flex items-center px-4 py-2 border border-blue-500 shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover_bg-blue-100 focus_outline-none focus_ring-2 focus_ring-offset-2 focus_ring-blue-500 whitespace-nowrap transition-colors">
                     <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -136,8 +136,8 @@
 
         <div class="pt-5 border-t">
             <div class="flex justify-end">
-                <button type="button" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Hủy</button>
-                <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-6 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ isset($article) ? 'Lưu Truyện/Bài viết' : 'Lưu Truyện/Bài viết' }}</button>
+                <button type="button" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover_bg-gray-50 focus_outline-none focus_ring-2 focus_ring-indigo-500 focus_ring-offset-2">Hủy</button>
+                <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-6 text-sm font-medium text-white shadow-sm hover_bg-indigo-700 focus_outline-none focus_ring-2 focus_ring-indigo-500 focus_ring-offset-2">{{ isset($article) ? 'Lưu Truyện/Bài viết' : 'Lưu Truyện/Bài viết' }}</button>
             </div>
         </div>
     </form>
@@ -146,14 +146,14 @@
 </div>
 
 @if(isset($article))
-<div class="mx-auto max-w-5xl px-4 pb-8 sm:px-6 lg:px-8 mt-4" id="chapters-section">
+<div class="mx-auto max-w-5xl px-4 pb-8 sm_px-6 lg_px-8 mt-4" id="chapters-section">
     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-indigo-600">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+        <div class="flex flex-col sm_flex-row sm_justify-between sm_items-center mb-6">
             <div>
                 <h2 class="text-xl font-bold text-gray-900 uppercase">CÁC CHƯƠNG/TẬP CỦA BÀI VIẾT NÀY</h2>
                 <p class="text-sm text-gray-500 mt-1">Dành riêng cho việc đăng truyện nhiều kỳ.</p>
             </div>
-            <a href="{{ route('admin.chapters.create', $article->id) }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition border border-transparent shadow-sm">
+            <a href="{{ route('admin.chapters.create', $article->id) }}" class="mt-4 sm_mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover_bg-indigo-700 transition border border-transparent shadow-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -174,26 +174,26 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($article->chapters as $chapter)
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr class="hover_bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">#{{ $chapter->chapter_number }}</td>
                         <td class="px-6 py-4 text-sm text-gray-700 font-medium clamp-1">{{ $chapter->title }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $chapter->created_at->format('d/m/Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                             <div class="flex items-center justify-end space-x-4">
-                                <a href="{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem Chapter">
+                                <a href="{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}" class="text-indigo-600 hover_text-indigo-900" target="_blank" title="Xem Chapter">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </a>
 
-                                <button type="button" onclick="copyListShareUrl(this, '{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
+                                <button type="button" onclick="copyListShareUrl(this, '{{ rtrim(config('app.url'), '/') . route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $chapter->chapter_number], false) }}?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover_text-[#7a0608]" title="Copy Link Share">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                                     </svg>
                                 </button>
 
-                                <a href="{{ route('admin.chapters.edit', $chapter->id) }}" class="text-green-600 hover:text-green-900" title="Sửa">
+                                <a href="{{ route('admin.chapters.edit', $chapter->id) }}" class="text-green-600 hover_text-green-900" title="Sửa">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                                     </svg>
@@ -202,7 +202,7 @@
                                 <form action="{{ route('admin.chapters.destroy', $chapter->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xoá chương này?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 shrink-0" title="Xoá">
+                                    <button type="submit" class="text-red-600 hover_text-red-900 shrink-0" title="Xoá">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -328,17 +328,17 @@
 
 <!-- Media Library Modal -->
 <div id="media-library-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm_block sm_p-0">
         <!-- Background overlay -->
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeMediaLibrary()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <span class="hidden sm_inline-block sm_align-middle sm_h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Modal panel -->
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm_my-8 sm_align-middle sm_max-w-5xl sm_w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm_p-6 sm_pb-4">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Cửa Sổ Chọn Ảnh Từ Thư Viện</h3>
-                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeMediaLibrary()">
+                    <button type="button" class="text-gray-400 hover_text-gray-500" onclick="closeMediaLibrary()">
                         <span class="sr-only">Đóng</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -354,15 +354,15 @@
                     <p class="text-gray-500 inline-block">Đang tải...</p>
                 </div>
 
-                <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto hidden p-2">
+                <div id="media-grid" class="grid grid-cols-2 sm_grid-cols-3 md_grid-cols-4 lg_grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto hidden p-2">
                     <!-- Images will be injected here via JS -->
                 </div>
                 <div id="media-empty" class="text-center py-10 hidden border-2 border-dashed border-gray-300 rounded-lg">
                     <p class="text-gray-500">Chưa có bức ảnh nào trong thư viện (bạn cần tự upload ảnh thumbnail hoặc ảnh chèn nội dung trước). </p>
                 </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors" onclick="closeMediaLibrary()">
+            <div class="bg-gray-50 px-4 py-3 sm_px-6 sm_flex sm_flex-row-reverse">
+                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover_bg-gray-50 focus_outline-none focus_ring-2 focus_ring-offset-2 focus_ring-indigo-500 sm_mt-0 sm_ml-3 sm_w-auto sm_text-sm transition-colors" onclick="closeMediaLibrary()">
                     Trở Lại
                 </button>
             </div>
@@ -429,10 +429,10 @@
                     const img = document.createElement('img');
                     img.src = url;
                     img.loading = 'lazy';
-                    img.className = 'block object-cover w-full h-full transform group-hover:scale-110 transition duration-300 ease-out';
+                    img.className = 'block object-cover w-full h-full transform group-hover_scale-110 transition duration-300 ease-out';
 
                     const overlay = document.createElement('div');
-                    overlay.className = 'absolute inset-0 bg-indigo-500 bg-opacity-0 group-hover:bg-opacity-20 transition duration-300 flex items-center justify-center';
+                    overlay.className = 'absolute inset-0 bg-indigo-500 bg-opacity-0 group-hover_bg-opacity-20 transition duration-300 flex items-center justify-center';
 
                     div.appendChild(img);
                     div.appendChild(overlay);
@@ -443,7 +443,7 @@
                     if (!loadMoreBtn) {
                         const btnDiv = document.createElement('div');
                         btnDiv.className = 'col-span-full flex justify-center py-4 w-full';
-                        btnDiv.innerHTML = `<button id="media-load-more" type="button" class="px-6 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium transition-colors border border-indigo-200" onclick="loadMoreMedia()">Tải thêm hình ảnh</button>`;
+                        btnDiv.innerHTML = `<button id="media-load-more" type="button" class="px-6 py-2 bg-indigo-50 hover_bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium transition-colors border border-indigo-200" onclick="loadMoreMedia()">Tải thêm hình ảnh</button>`;
                         grid.appendChild(btnDiv);
                         loadMoreBtn = document.getElementById('media-load-more');
                     } else {

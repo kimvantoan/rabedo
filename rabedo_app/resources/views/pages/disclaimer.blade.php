@@ -3,8 +3,8 @@
 @section('title', 'Disclaimer - Rabedo')
 
 @section('content')
-<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white px-6 py-10 shadow-sm sm:rounded-lg sm:p-12 mb-8 border border-gray-100">
+<div class="mx-auto max-w-4xl px-4 sm_px-6 lg_px-8 py-12">
+    <div class="bg-white px-6 py-10 shadow-sm sm_rounded-lg sm_p-12 mb-8 border border-gray-100">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-6 text-center">Disclaimer</h1>
         
         <div class="prose prose-lg mx-auto text-gray-600">

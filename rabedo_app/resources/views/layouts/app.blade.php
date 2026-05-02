@@ -31,7 +31,7 @@
 </head>
 <body class="min-h-full flex flex-col antialiased bg-white text-black">
     <header class="border-b bg-white relative top-0 z-50">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center relative">
+        <div class="mx-auto max-w-4xl px-4 sm_px-6 lg_px-8 py-4 flex items-center justify-center relative">
             <a href="{{ route('home') }}" class="flex items-center">
                 <img src="{{ asset('logo_sharp.png') }}" alt="Rabedo Logo" class="h-10 w-auto">
             </a>
@@ -42,24 +42,24 @@
     <main class="flex-grow">
         @yield('content')
     <footer class="bg-gray-50 border-t border-gray-200 py-12 mt-12">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0 text-center md:text-left">
+        <div class="mx-auto max-w-4xl px-4 sm_px-6 lg_px-8">
+            <div class="flex flex-col md_flex-row justify-between items-center">
+                <div class="mb-6 md_mb-0 text-center md_text-left">
                     <a href="{{ route('home') }}" class="inline-block">
-                        <img src="{{ asset('logo_sharp.png') }}" alt="Logo" class="h-10 w-auto mx-auto md:mx-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-300">
+                        <img src="{{ asset('logo_sharp.png') }}" alt="Logo" class="h-10 w-auto mx-auto md_mx-0 grayscale opacity-80 hover_grayscale-0 hover_opacity-100 transition duration-300">
                     </a>
                     <p class="mt-4 text-sm text-gray-500 max-w-sm">
                         Explore drama stories, lifestyle moments, and trending topics shaping everyday life.
                     </p>
                 </div>
             </div>
-            <div class="mt-8 border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mt-8 border-t border-gray-200 pt-8 flex flex-col md_flex-row justify-between items-center">
                 <p class="text-sm text-gray-500">&copy; {{ date('Y') }} Rabedo</p>
-                <div class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
-                    <a href="{{ route('page.about') }}" class="hover:text-gray-900 transition">About Us</a>
-                    <a href="{{ route('page.contact') }}" class="hover:text-gray-900 transition">Contact</a>
-                    <a href="{{ route('page.disclaimer') }}" class="hover:text-gray-900 transition">Disclaimer</a>
-                    <a href="{{ route('page.privacy') }}" class="hover:text-gray-900 transition">Privacy Policy</a>
+                <div class="mt-4 md_mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+                    <a href="{{ route('page.about') }}" class="hover_text-gray-900 transition">About Us</a>
+                    <a href="{{ route('page.contact') }}" class="hover_text-gray-900 transition">Contact</a>
+                    <a href="{{ route('page.disclaimer') }}" class="hover_text-gray-900 transition">Disclaimer</a>
+                    <a href="{{ route('page.privacy') }}" class="hover_text-gray-900 transition">Privacy Policy</a>
                 </div>
             </div>
         </div>
