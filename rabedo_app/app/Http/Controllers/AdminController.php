@@ -18,6 +18,13 @@ class AdminController extends Controller
             $query->where('user_id', auth()->id());
         }
 
+        $articleType = $request->input('article_type', 'all');
+        if ($articleType === 'single') {
+            $query->doesntHave('chapters');
+        } elseif ($articleType === 'chaptered') {
+            $query->has('chapters');
+        }
+
         if ($search = $request->input('search')) {
             $query->where('title', 'like', "%{$search}%");
         }

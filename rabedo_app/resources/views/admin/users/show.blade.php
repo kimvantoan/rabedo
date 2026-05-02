@@ -122,7 +122,7 @@
                         <tr>
                             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $article->id }}</td>
                             <td class="px-3 py-4 text-sm font-medium text-indigo-600 hover:text-indigo-900 max-w-[120px] sm:max-w-[180px] lg:max-w-[200px] truncate" title="{{ $article->title }}">
-                                <a href="{{ route('articles.show', [$article->id, 'utm_source' => $article->user?->username]) }}" target="_blank">{{ $article->title }}</a>
+                                <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id, 'utm_source' => $article->user?->username], false) }}" target="_blank">{{ $article->title }}</a>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 hidden sm:table-cell">{{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}</td>
                             @if(auth()->check() && auth()->user()->is_admin)
@@ -134,14 +134,14 @@
                             @endif
                             <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium sm:pr-6">
                                 <div class="flex items-center justify-end space-x-3">
-                                    <a href="{{ route('articles.show', [$article->id]) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem">
+                                    <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', [$article->id], false) }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" title="Xem">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
                                     </a>
 
-                                    <button type="button" onclick="copyListShareUrl(this, '{{ route('articles.show', ['idOrSlug' => $article->id]) }}/?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
+                                    <button type="button" onclick="copyListShareUrl(this, '{{ rtrim(config('app.url'), '/') . route('articles.show', ['idOrSlug' => $article->id], false) }}/?utm_source={{ $article->user?->username ?? 'admin' }}&utm_medium=social')" class="text-[#9d080a] hover:text-[#7a0608]" title="Copy Link Share">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                                         </svg>

@@ -54,8 +54,35 @@
     </div>
     @endif
 
+    <div class="mb-4">
+        <div class="sm:hidden">
+            <label for="article_type" class="sr-only">Lọc bài viết</label>
+            <select id="article_type" name="article_type" class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 py-2 pl-3 pr-10 text-base" onchange="window.location.href=this.value">
+                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'all', 'page' => 1]) }}" {{ request('article_type', 'all') == 'all' ? 'selected' : '' }}>Tất cả bài viết</option>
+                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'single', 'page' => 1]) }}" {{ request('article_type') == 'single' ? 'selected' : '' }}>Bài viết đơn</option>
+                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'chaptered', 'page' => 1]) }}" {{ request('article_type') == 'chaptered' ? 'selected' : '' }}>Bài có Chapters</option>
+            </select>
+        </div>
+        <div class="hidden sm:block">
+            <nav class="flex space-x-4" aria-label="Tabs">
+                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'all', 'page' => 1]) }}" class="{{ request('article_type', 'all') == 'all' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                    Tất cả bài viết
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'single', 'page' => 1]) }}" class="{{ request('article_type') == 'single' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                    Bài viết đơn
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'chaptered', 'page' => 1]) }}" class="{{ request('article_type') == 'chaptered' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                    Bài có Chapters
+                </a>
+            </nav>
+        </div>
+    </div>
+
     <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <form action="{{ route('admin.dashboard') }}" method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+            @if(request('article_type'))
+            <input type="hidden" name="article_type" value="{{ request('article_type') }}">
+            @endif
             <div class="relative flex-grow max-w-md w-full sm:w-auto">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

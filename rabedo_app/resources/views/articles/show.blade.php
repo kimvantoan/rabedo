@@ -372,7 +372,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                 </div>
                 <div class="mb-3">
                     <h3 class="text-[1.25rem] font-bold font-sans leading-tight text-[#0a1e3f] group-hover:text-[#9d080a] transition-colors line-clamp-2">
-                        <a href="{{ route('articles.show', [$relArticle->id, 'utm_source' => $relArticle->user?->username]) }}">
+                        <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', ['idOrSlug' => $relArticle->id], false) }}/?utm_source={{ $relArticle->user?->username ?? 'admin' }}&utm_medium=social">
                             <span class="absolute inset-0"></span>
                             {{ $relArticle->title }}
                         </a>
