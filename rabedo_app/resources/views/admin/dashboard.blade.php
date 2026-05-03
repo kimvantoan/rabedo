@@ -54,28 +54,18 @@
     </div>
     @endif
 
-    <div class="mb-4">
-        <div class="sm_hidden">
-            <label for="article_type" class="sr-only">Lọc bài viết</label>
-            <select id="article_type" name="article_type" class="block w-full rounded-md border-gray-300 focus_border-indigo-500 focus_ring-indigo-500 py-2 pl-3 pr-10 text-base" onchange="window.location.href=this.value">
-                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'all', 'page' => 1]) }}" {{ request('article_type', 'all') == 'all' ? 'selected' : '' }}>Tất cả bài viết</option>
-                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'single', 'page' => 1]) }}" {{ request('article_type') == 'single' ? 'selected' : '' }}>Bài viết đơn</option>
-                <option value="{{ request()->fullUrlWithQuery(['article_type' => 'chaptered', 'page' => 1]) }}" {{ request('article_type') == 'chaptered' ? 'selected' : '' }}>Bài có Chapters</option>
-            </select>
-        </div>
-        <div class="hidden sm_block">
-            <nav class="flex space-x-4" aria-label="Tabs">
-                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'all', 'page' => 1]) }}" class="{{ request('article_type', 'all') == 'all' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover_text-gray-700 hover_bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
-                    Tất cả bài viết
-                </a>
-                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'single', 'page' => 1]) }}" class="{{ request('article_type') == 'single' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover_text-gray-700 hover_bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
-                    Bài viết đơn
-                </a>
-                <a href="{{ request()->fullUrlWithQuery(['article_type' => 'chaptered', 'page' => 1]) }}" class="{{ request('article_type') == 'chaptered' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover_text-gray-700 hover_bg-gray-100' }} rounded-md px-3 py-2 text-sm font-medium transition-colors">
-                    Bài có Chapters
-                </a>
-            </nav>
-        </div>
+    <div class="mb-6">
+        <nav class="flex flex-wrap gap-2 sm:space-x-2 bg-white p-1.5 rounded-lg shadow-sm border border-gray-200 sm:inline-flex" aria-label="Tabs">
+            <a href="{{ request()->fullUrlWithQuery(['article_type' => 'all', 'page' => 1]) }}" class="{{ request('article_type', 'all') == 'all' ? 'bg-indigo-600 text-white shadow' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }} rounded-md px-4 py-2 text-sm font-semibold transition-all">
+                Tất cả bài viết
+            </a>
+            <a href="{{ request()->fullUrlWithQuery(['article_type' => 'single', 'page' => 1]) }}" class="{{ request('article_type') == 'single' ? 'bg-indigo-600 text-white shadow' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }} rounded-md px-4 py-2 text-sm font-semibold transition-all">
+                Bài viết đơn
+            </a>
+            <a href="{{ request()->fullUrlWithQuery(['article_type' => 'chaptered', 'page' => 1]) }}" class="{{ request('article_type') == 'chaptered' ? 'bg-indigo-600 text-white shadow' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }} rounded-md px-4 py-2 text-sm font-semibold transition-all">
+                Bài có Chapters
+            </a>
+        </nav>
     </div>
 
     <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">

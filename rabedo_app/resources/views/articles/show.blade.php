@@ -105,7 +105,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
                 <!-- Action Buttons Top -->
                 <div class="chapter-action-top-wrapper">
-                    <button onclick="toggleChapterDrawer()" class="chapter-list-btn-top">
+                    <button type="button" onclick="toggleChapterDrawer()" class="chapter-list-btn-top">
                         <svg class="chapter-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                         </svg>
@@ -159,7 +159,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             <!-- Action Buttons Bottom -->
             @if(isset($currentChapter))
             <div class="chapter-action-bottom-wrapper">
-                <button onclick="toggleChapterDrawer()" class="chapter-list-btn-bottom">
+                <button type="button" onclick="toggleChapterDrawer()" class="chapter-list-btn-bottom">
                     <svg class="chapter-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                     </svg>
@@ -186,7 +186,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
         <!-- Header -->
         <div class="drawer-header">
             <h3 class="drawer-title">Chapters</h3>
-            <button onclick="toggleChapterDrawer()" class="drawer-close-btn">
+            <button type="button" onclick="toggleChapterDrawer()" class="drawer-close-btn">
                 <svg class="drawer-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -223,7 +223,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
     'title' => $ch->title,
     'url' => route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $ch->chapter_number])
     ];
-    });
+    })->values();
     @endphp
     <script id="chapters-data" type="application/json" data-current-chapter="{{ isset($currentChapter) ? $currentChapter->chapter_number : 'null' }}">
         {!! json_encode($chaptersJsonData) !!}
@@ -237,25 +237,37 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
         const currentChapterNumberStr = document.getElementById('chapters-data').getAttribute('data-current-chapter');
         const currentChapterNumber = currentChapterNumberStr === 'null' ? null : parseInt(currentChapterNumberStr);
 
+        let overlayShowTimeout = null;
+        let overlayHideTimeout = null;
+
         function toggleChapterDrawer() {
             const drawer = document.getElementById('chapter-drawer');
             const overlay = document.getElementById('chapter-drawer-overlay');
             const body = document.body;
 
-            if (drawer.classList.contains('translate-x-full')) {
-                drawer.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-                // Tiny delay to trigger opacity transition
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            if (drawer.classList.contains('drawer-panel-open')) {
+                drawer.classList.remove('drawer-panel-open');
+                overlay.classList.remove('drawer-overlay-visible');
+                
+                clearTimeout(overlayShowTimeout);
+                overlayHideTimeout = setTimeout(() => {
+                    overlay.classList.remove('drawer-overlay-open');
+                }, 300);
+                
+                body.style.overflow = '';
+            } else {
+                drawer.classList.add('drawer-panel-open');
+                overlay.classList.add('drawer-overlay-open');
+                
+                clearTimeout(overlayHideTimeout);
+                overlayShowTimeout = setTimeout(() => {
+                    overlay.classList.add('drawer-overlay-visible');
+                }, 10);
+                
                 body.style.overflow = 'hidden'; // Prevent scrolling under drawer
 
                 // Render current state
                 renderDrawer();
-            } else {
-                drawer.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-                body.style.overflow = '';
             }
         }
 

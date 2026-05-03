@@ -172,7 +172,10 @@
     .chapter-list-btn-bottom { @apply flex items-center text-sm font-medium text-gray-500 transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-200; }
     .chapter-list-btn-bottom:hover { @apply text-red-800; }
     .drawer-overlay { @apply fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity opacity-0; }
+    .drawer-overlay-open { display: block !important; }
+    .drawer-overlay-visible { opacity: 1 !important; }
     .drawer-panel { @apply fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col; }
+    .drawer-panel-open { transform: translateX(0) !important; }
     .drawer-header { @apply flex items-center justify-between px-6 py-4 border-b border-gray-200; }
     .drawer-title { @apply text-lg font-bold text-gray-900; }
     .drawer-close-btn { @apply text-gray-400 transition-colors; }
