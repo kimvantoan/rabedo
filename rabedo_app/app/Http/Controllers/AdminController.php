@@ -58,7 +58,7 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
-            'thumbnail' => 'required_without:existing_thumbnail|nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'thumbnail' => 'required_without:existing_thumbnail|nullable|image|max:5120',
             'existing_thumbnail' => 'required_without:thumbnail|nullable|string',
         ], [
             'thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',
@@ -126,7 +126,7 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
-            'thumbnail' => 'required_without:existing_thumbnail|nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'thumbnail' => 'required_without:existing_thumbnail|nullable|image|max:5120',
             'existing_thumbnail' => 'required_without:thumbnail|nullable|string',
         ], [
             'thumbnail.required_without' => 'Bạn phải tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.',

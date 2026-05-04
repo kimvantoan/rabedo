@@ -106,9 +106,23 @@
             <p class="mt-2 text-sm text-red-600 font-medium">{{ $errors->first('existing_thumbnail') }}</p>
             @endif
             <p id="thumbnail-js-error" class="mt-2 text-sm text-red-600 font-medium hidden">Vui lòng tải lên hoặc chọn ảnh đại diện (thumbnail) từ thư viện.</p>
+            <p id="thumbnail-size-error" class="mt-2 text-sm text-red-600 font-medium hidden">Ảnh tải lên vượt quá dung lượng cho phép (tối đa 5MB). Vui lòng chọn ảnh nhẹ hơn.</p>
 
             <script>
                 function previewThumbnail(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // Kiểm tra dung lượng 5MB (5 * 1024 * 1024 bytes)
+                    if (file.size > 5242880) {
+                        document.getElementById('thumbnail-size-error').classList.remove('hidden');
+                        event.target.value = ''; // Xoá file đã chọn
+                        document.getElementById('thumbnail-preview-container').style.display = 'none';
+                        return;
+                    } else {
+                        document.getElementById('thumbnail-size-error').classList.add('hidden');
+                    }
+
                     const reader = new FileReader();
                     reader.onload = function() {
                         const output = document.getElementById('thumbnail-preview');
@@ -117,9 +131,7 @@
                         // Clear the existing hidden link to avoid ambiguity
                         document.getElementById('existing_thumbnail').value = '';
                     };
-                    if (event.target.files[0]) {
-                        reader.readAsDataURL(event.target.files[0]);
-                    }
+                    reader.readAsDataURL(file);
                 }
             </script>
         </div>
@@ -299,6 +311,11 @@
         input.onchange = () => {
             const file = input.files[0];
             if (!file) return;
+
+            if (file.size > 5242880) {
+                alert('Ảnh tải lên vượt quá dung lượng cho phép (tối đa 5MB). Vui lòng chọn ảnh nhẹ hơn.');
+                return;
+            }
 
             const formData = new FormData();
             formData.append('upload', file);
