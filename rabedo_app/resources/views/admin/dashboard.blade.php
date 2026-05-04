@@ -100,7 +100,7 @@
                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">ID</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tiêu đề</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Biên tập viên</th>
-                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden sm_table-cell">Ngày tạo</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm_table-cell">Ngày tạo</th>
                     @if(auth()->check() && auth()->user()->is_admin)
                     <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">
                         @php
@@ -141,7 +141,7 @@
                         {{ $article->title }}
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $article->user?->name ?: '-' }}</td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 hidden sm_table-cell">{{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm_table-cell">{{ \Carbon\Carbon::parse($article->created_at)->format('d/m/Y') }}</td>
                     @if(auth()->check() && auth()->user()->is_admin)
                     <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">
                         <span class="inline-flex items-center rounded-full bg-gray-50 border border-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
