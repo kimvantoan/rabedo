@@ -227,9 +227,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
     })->values();
     @endphp
     <script id="chapters-data" type="application/json" data-current-chapter="{{ isset($currentChapter) ? $currentChapter->chapter_number : 'null' }}">
-        {
-            !!json_encode($chaptersJsonData) !!
-        }
+        @json($chaptersJsonData)
     </script>
     <script>
         window.chaptersData = JSON.parse(document.getElementById('chapters-data').textContent);
