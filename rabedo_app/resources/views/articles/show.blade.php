@@ -410,19 +410,12 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
         const paragraphs = proseContainer.querySelectorAll('p');
         const totalParagraphs = paragraphs.length;
-        const numberOfAds = 5;
 
         if (totalParagraphs > 0) {
-            // Cho phép chèn tối đa numberOfAds, nhưng không vượt quá số lượng đoạn văn
-            let actualAds = Math.min(numberOfAds, totalParagraphs);
-
-            // Tính toán khoảng cách cho các quảng cáo còn lại (từ đoạn 2 trở đi)
-            let remainingAds = actualAds - 1;
-            let remainingParagraphs = totalParagraphs - 1;
-            let step = remainingAds > 0 ? Math.floor(remainingParagraphs / remainingAds) : 1;
-            if (step < 1) step = 1;
-
             let adsInserted = 0;
+            const maxAds = 5;
+            const wordsBetweenAds = 500; // Khoảng cách 500 từ
+            let wordCountAccumulator = 0;
 
             // Khởi tạo IntersectionObserver để lazy load quảng cáo
             const adObserver = new IntersectionObserver(function(entries, observer) {
@@ -456,25 +449,21 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                     }
                 });
             }, {
-                rootMargin: '200px 0px' // Load trước 200px khi sắp cuộn tới
+                rootMargin: '80px 0px' // Load trước 80px khi sắp cuộn tới
             });
 
             paragraphs.forEach(function(p, index) {
-                // Điều kiện chèn quảng cáo: 
-                // 1. Luôn chèn sau đoạn đầu tiên (index === 0)
-                // 2. Với các đoạn tiếp theo, chèn theo khoảng cách 'step'
-                let shouldInsertAd = false;
-                if (index === 0) {
-                    shouldInsertAd = true;
-                } else if (remainingAds > 0 && index % step === 0) {
-                    shouldInsertAd = true;
-                }
+                // Tính số từ trong đoạn văn hiện tại
+                const text = p.innerText || p.textContent || "";
+                const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+                wordCountAccumulator += wordCount;
 
-                if (shouldInsertAd && adsInserted < actualAds) {
+                // Nếu tích lũy đủ 500 từ và chưa vượt quá 5 quảng cáo
+                if (wordCountAccumulator >= wordsBetweenAds && adsInserted < maxAds) {
 
                     const adDiv = document.createElement('div');
                     adDiv.className = 'ads-wrapper-top-show my-8';
-                    adDiv.style.minHeight = '200px'; // Giữ khung để tránh giật trang (layout shift)
+                    adDiv.style.minHeight = '250px'; // Giữ khung để tránh giật trang (layout shift)
 
                     // Chèn khung quảng cáo trống vào sau thẻ <p>
                     p.parentNode.insertBefore(adDiv, p.nextSibling);
@@ -483,6 +472,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                     adObserver.observe(adDiv);
 
                     adsInserted++;
+                    wordCountAccumulator = 0; // Đặt lại bộ đếm để tính cho quảng cáo tiếp theo
                 }
             });
         }
