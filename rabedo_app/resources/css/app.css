@@ -6,7 +6,7 @@
 
     /* Headings & Wrappers */
     .article-main-title {
-        @apply text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-5 leading-tight;
+        @apply text-lg md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-5 leading-tight;
     }
 
     .article-chapter-title {
@@ -27,7 +27,7 @@
 
     /* Paragraphs */
     .article-desc-p {
-        @apply text-xl md:text-2xl text-gray-600 leading-relaxed font-sans font-medium mb-6;
+        @apply text-base md:text-2xl text-gray-600 leading-relaxed font-sans font-medium mb-6;
     }
 
     .hero-desc-p {
@@ -52,7 +52,7 @@
     }
 
     .rabedo-prose p {
-        @apply text-lg md:text-xl leading-[1.65] text-[#333] mb-6 font-sans whitespace-normal break-words text-left;
+        @apply text-sm md:text-xl leading-[1.65] text-[#333] mb-6 font-sans whitespace-normal break-words text-left;
     }
 
     .rabedo-prose p:last-child {
@@ -105,7 +105,7 @@
     }
 
     .rabedo-prose-chapter p {
-        @apply text-lg md:text-xl leading-[1.8] text-[#333] mb-6 font-sans whitespace-normal break-words text-left;
+        @apply text-sm md:text-xl leading-[1.8] text-[#333] mb-6 font-sans whitespace-normal break-words text-left;
     }
 
     .rabedo-prose-chapter p:last-child {
