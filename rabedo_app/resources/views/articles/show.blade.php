@@ -29,6 +29,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
         <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
+        <div class="text-center text-xs text-gray-400 mt-2" style="font-size: 11px; color: #9ca3af; letter-spacing: 0.05em; text-transform: uppercase;">Advertisements</div>
     </div>
 
     @if(!(isset($currentChapter) && $currentChapter->chapter_number >= 2))
@@ -115,7 +116,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             </div>
 
             <!-- Bài viết -->
-            <div class="rabedo-prose">
+            <div class="rabedo-prose" id="article-content-body">
                 {!! $currentChapter->content !!}
             </div>
 
@@ -168,7 +169,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             </div>
             @endif
             @else
-            <div class="rabedo-prose">
+            <div class="rabedo-prose" id="article-content-body">
                 {!! $article->content !!}
             </div>
             @endif
@@ -226,7 +227,9 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
     })->values();
     @endphp
     <script id="chapters-data" type="application/json" data-current-chapter="{{ isset($currentChapter) ? $currentChapter->chapter_number : 'null' }}">
-        {!! json_encode($chaptersJsonData) !!}
+        {
+            !!json_encode($chaptersJsonData) !!
+        }
     </script>
     <script>
         window.chaptersData = JSON.parse(document.getElementById('chapters-data').textContent);
@@ -248,22 +251,22 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
             if (drawer.classList.contains('drawer-panel-open')) {
                 drawer.classList.remove('drawer-panel-open');
                 overlay.classList.remove('drawer-overlay-visible');
-                
+
                 clearTimeout(overlayShowTimeout);
                 overlayHideTimeout = setTimeout(() => {
                     overlay.classList.remove('drawer-overlay-open');
                 }, 300);
-                
+
                 body.style.overflow = '';
             } else {
                 drawer.classList.add('drawer-panel-open');
                 overlay.classList.add('drawer-overlay-open');
-                
+
                 clearTimeout(overlayHideTimeout);
                 overlayShowTimeout = setTimeout(() => {
                     overlay.classList.add('drawer-overlay-visible');
                 }, 10);
-                
+
                 body.style.overflow = 'hidden'; // Prevent scrolling under drawer
 
                 // Render current state
@@ -401,4 +404,90 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
     </div>
 </div>
 @endif
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const proseContainer = document.getElementById('article-content-body');
+        if (!proseContainer) return;
+
+        const paragraphs = proseContainer.querySelectorAll('p');
+        const totalParagraphs = paragraphs.length;
+        const numberOfAds = 5;
+
+        if (totalParagraphs > 0) {
+            // Cho phép chèn tối đa numberOfAds, nhưng không vượt quá số lượng đoạn văn
+            let actualAds = Math.min(numberOfAds, totalParagraphs);
+
+            // Tính toán khoảng cách cho các quảng cáo còn lại (từ đoạn 2 trở đi)
+            let remainingAds = actualAds - 1;
+            let remainingParagraphs = totalParagraphs - 1;
+            let step = remainingAds > 0 ? Math.floor(remainingParagraphs / remainingAds) : 1;
+            if (step < 1) step = 1;
+
+            let adsInserted = 0;
+
+            // Khởi tạo IntersectionObserver để lazy load quảng cáo
+            const adObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const adDiv = entry.target;
+
+                        // Chèn mã quảng cáo khi cuộn tới nơi
+                        adDiv.innerHTML = `
+                            <ins class="adsbygoogle"
+                                style="display:block"
+                                data-ad-client="ca-pub-4370452252708446"
+                                data-ad-slot="9674028583"
+                                data-ad-format="auto"
+                                data-full-width-responsive="true"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            <\/script>
+                            <div class="text-center text-xs text-gray-400 mt-2" style="font-size: 11px; color: #9ca3af; letter-spacing: 0.05em; text-transform: uppercase;">Advertisements</div>
+                        `;
+
+                        // Thực thi script AdSense
+                        try {
+                            (window.adsbygoogle = window.adsbygoogle || []).push({});
+                        } catch (e) {
+                            console.error('AdSense error:', e);
+                        }
+
+                        // Ngừng theo dõi element này sau khi đã load
+                        observer.unobserve(adDiv);
+                    }
+                });
+            }, {
+                rootMargin: '200px 0px' // Load trước 200px khi sắp cuộn tới
+            });
+
+            paragraphs.forEach(function(p, index) {
+                // Điều kiện chèn quảng cáo: 
+                // 1. Luôn chèn sau đoạn đầu tiên (index === 0)
+                // 2. Với các đoạn tiếp theo, chèn theo khoảng cách 'step'
+                let shouldInsertAd = false;
+                if (index === 0) {
+                    shouldInsertAd = true;
+                } else if (remainingAds > 0 && index % step === 0) {
+                    shouldInsertAd = true;
+                }
+
+                if (shouldInsertAd && adsInserted < actualAds) {
+
+                    const adDiv = document.createElement('div');
+                    adDiv.className = 'ads-wrapper-top-show my-8';
+                    adDiv.style.minHeight = '200px'; // Giữ khung để tránh giật trang (layout shift)
+
+                    // Chèn khung quảng cáo trống vào sau thẻ <p>
+                    p.parentNode.insertBefore(adDiv, p.nextSibling);
+
+                    // Bắt đầu theo dõi khung trống
+                    adObserver.observe(adDiv);
+
+                    adsInserted++;
+                }
+            });
+        }
+    });
+</script>
 @endsection

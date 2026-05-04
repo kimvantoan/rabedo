@@ -47,6 +47,7 @@ $heroDesc = 'Explore drama stories, lifestyle moments, and trending topics shapi
             <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
+            <div class="text-center text-xs text-gray-400 mt-2" style="font-size: 11px; color: #9ca3af; letter-spacing: 0.05em; text-transform: uppercase;">Advertisements</div>
         </div>
     </div>
 </div>
@@ -130,6 +131,7 @@ $heroDesc = 'Explore drama stories, lifestyle moments, and trending topics shapi
         <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
+        <div class="text-center text-xs text-gray-400 mt-2" style="font-size: 11px; color: #9ca3af; letter-spacing: 0.05em; text-transform: uppercase;">Advertisements</div>
     </div>
     @else
     <p class="no-articles-text">No articles yet.</p>
