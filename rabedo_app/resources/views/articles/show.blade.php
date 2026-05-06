@@ -365,39 +365,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
     <div class="article-grid">
         @foreach($relatedArticles as $relArticle)
-        <article class="article-card">
-            @if($relArticle->thumbnail)
-            <div class="article-card-img-wrapper">
-                <img src="{{ asset($relArticle->thumbnail) }}" alt="{{ $relArticle->title }}" class="article-card-img" loading="lazy">
-            </div>
-            @endif
-            <div class="article-card-content">
-                <div class="article-card-date">
-                    <time datetime="{{ $relArticle->created_at }}">
-                        {{ \Carbon\Carbon::parse($relArticle->created_at)->format('M d, Y') }}
-                    </time>
-                </div>
-                <div class="article-card-title-wrapper">
-                    <h3 class="article-card-title">
-                        <a href="{{ rtrim(config('app.url'), '/') . route('articles.show', ['idOrSlug' => $relArticle->id], false) }}/?utm_source={{ $relArticle->user?->username ?? 'admin' }}&utm_medium=social">
-                            <span class="article-card-link-overlay"></span>
-                            {{ $relArticle->title }}
-                        </a>
-                    </h3>
-                </div>
-                <div class="article-card-desc">
-                    {{ \Illuminate\Support\Str::limit(strip_tags($relArticle->content), 120) }}
-                </div>
-                <div class="article-card-footer">
-                    <span class="article-card-readmore">
-                        Read Article
-                        <svg xmlns="http://www.w3.org/2000/svg" class="article-card-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </span>
-                </div>
-            </div>
-        </article>
+        <x-article-card :article="$relArticle" :isRelated="true" />
         @endforeach
     </div>
 </div>

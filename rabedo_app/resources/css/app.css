@@ -182,7 +182,7 @@
     }
 
     .article-card {
-        @apply relative flex flex-col bg-white border-0 transition-colors cursor-pointer;
+        @apply relative flex flex-col bg-white border-0 transition-colors;
     }
 
     .article-card-img-wrapper {
@@ -197,9 +197,7 @@
         @apply text-xl font-bold font-sans leading-tight text-blue-950 transition-colors line-clamp-2;
     }
 
-    .article-card:hover .article-card-title {
-        @apply text-red-800;
-    }
+
 
     .article-card-desc {
         @apply text-gray-600 text-base line-clamp-3 mb-4 leading-relaxed;

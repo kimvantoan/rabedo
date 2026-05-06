@@ -65,39 +65,7 @@ $heroDesc = 'Explore drama stories, lifestyle moments, and trending topics shapi
     @if($articles->count() > 0)
     <div class="article-grid">
         @foreach($articles as $article)
-        <article class="article-card">
-            @if($article->thumbnail)
-            <div class="article-card-img-wrapper">
-                <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}" class="object-cover w-full h-full" loading="lazy">
-            </div>
-            @endif
-            <div class="article-card-content">
-                <div class="article-card-date">
-                    <time datetime="{{ $article->created_at }}">
-                        {{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}
-                    </time>
-                </div>
-                <div class="article-card-title-wrapper">
-                    <h3 class="article-card-title">
-                        <a href="{{ route('articles.show', [$article->id]) }}">
-                            <span class="article-card-link-overlay"></span>
-                            {{ $article->title }}
-                        </a>
-                    </h3>
-                </div>
-                <div class="article-card-desc">
-                    {{ \Illuminate\Support\Str::limit(strip_tags($article->description ?: $article->content), 120) }}
-                </div>
-                <div class="article-card-footer">
-                    <span class="article-card-readmore">
-                        Read Article
-                        <svg xmlns="http://www.w3.org/2000/svg" class="article-card-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </span>
-                </div>
-            </div>
-        </article>
+        <x-article-card :article="$article" />
         @endforeach
     </div>
     <div class="pagination-wrapper pagination-theme">
