@@ -1,0 +1,45 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to VPS via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: 22
+        script: |
+          cd /var/www/rabedo
+          
+          git pull origin main
+          
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+          
+          npm install
+          npm run build
+          
+          php artisan migrate --force
+          
+          php artisan optimize:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          
+          chown -R www-data:www-data storage bootstrap/cache
+          chmod -R 775 storage bootstrap/cache
+          
+          echo "✅ Đã Deploy thành công Rabedo lên máy chủ!"
