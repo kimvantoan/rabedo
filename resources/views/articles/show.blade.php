@@ -70,7 +70,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                 <h2 class="article-chapter-title">Chapter {{ $currentChapter->chapter_number }}: {{ $currentChapter->title }}</h2>
 
                 <!-- Navigation Top -->
-                <div class="chapter-nav-top-wrapper">
+                <div class="chapter-nav-top-wrapper" style="position: relative; z-index: 99;">
                     @if($prevChapter)
                     <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="chapter-nav-btn">
                         <svg class="chapter-nav-icon-prev-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
                 </div>
 
                 <!-- Action Buttons Top -->
-                <div class="chapter-action-top-wrapper">
+                <div class="chapter-action-top-wrapper" style="position: relative; z-index: 99;">
                     <button type="button" onclick="toggleChapterDrawer()" class="chapter-list-btn-top">
                         <svg class="chapter-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
@@ -123,7 +123,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
 
             <!-- Navigation Bottom -->
-            <div class="chapter-nav-bottom-wrapper">
+            <div class="chapter-nav-bottom-wrapper" style="position: relative; z-index: 99;">
                 @if($prevChapter)
                 <a href="{{ route('articles.chapter', ['idOrSlug' => $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="chapter-nav-btn">
                     <svg class="chapter-nav-icon-prev-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +159,7 @@ $plainTextDesc = $article->description ?: Str::limit(strip_tags($article->conten
 
             <!-- Action Buttons Bottom -->
             @if(isset($currentChapter))
-            <div class="chapter-action-bottom-wrapper">
+            <div class="chapter-action-bottom-wrapper" style="position: relative; z-index: 99;">
                 <button type="button" onclick="toggleChapterDrawer()" class="chapter-list-btn-bottom">
                     <svg class="chapter-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
