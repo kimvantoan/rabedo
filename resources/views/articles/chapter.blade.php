@@ -69,7 +69,7 @@
     </div>
 
     <!-- Nút điều hướng -->
-    <div class="chapter-bottom-nav">
+    <div class="chapter-bottom-nav" style="position: relative; z-index: 99;">
         @if($prevChapter)
             <a href="{{ route('articles.chapter', ['idOrSlug' => $article->slug ?: $article->id, 'chapterNumber' => $prevChapter->chapter_number]) }}" class="chapter-nav-btn-alt">
                 <svg class="chapter-nav-icon-prev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
